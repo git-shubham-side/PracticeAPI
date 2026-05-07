@@ -19,7 +19,7 @@ app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const Users = require("./models/Users");
+const userController = require("./controllers/users");
 
 // Database Connection
 // const connectDB = require("./connectDB/db");
@@ -42,11 +42,12 @@ app.use("/api", limiter);
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 // app.use("/api/v1", routes);
-app.get("/api/v1/users/", async (req, res) => {
-  const count = Number(req.query.count || 10);
-  const result = await Users.find({}).limit(count);
-  res.json(result);
+app.get("/api/v1", (req, res) => {
+  res.json({ message: "welcome to PracticeAPI" });
 });
+
+//Users Data
+app.get("/api/v1/users", userController);
 
 // ─── 404 & Error Handler ─────────────────────────────────────────────────────
 app.use(notFound);
@@ -56,5 +57,5 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} `);
+  console.log(`Server running on: http://localhost:${PORT}`);
 });
