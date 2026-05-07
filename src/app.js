@@ -19,10 +19,7 @@ app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-function getL(req, res, next) {
-  console.log("message-------------->", process.env.msg);
-  next();
-}
+const Users = require("./models/Users");
 
 // Database Connection
 // const connectDB = require("./connectDB/db");
@@ -42,11 +39,13 @@ const limiter = rateLimit({
   message: { error: "Too many requests, please try again later." },
 });
 app.use("/api", limiter);
-app.use(getL);
+
 // ─── Routes ───────────────────────────────────────────────────────────────────
 // app.use("/api/v1", routes);
-app.get("/api/v1/users", (req, res) => {
-  res.json({ status: "active" });
+app.get("/api/v1/users/", async (req, res) => {
+  const count = Number(req.query.count || 10);
+  const result = await Users.find({}).limit(count);
+  res.json(result);
 });
 
 // ─── 404 & Error Handler ─────────────────────────────────────────────────────

@@ -46,20 +46,20 @@ const userSchema = new mongoose.Schema({
 const Users = mongoose.model("Users", userSchema);
 
 //Data Seeding
-const users = generateData();
+// const users = generateData();
 
-async function seedData(data) {
-  const result = await Users.create(data);
-  console.log(result);
-}
+// async function seedData(data) {
+//   const result = await Users.create(data);
+//   console.log(result);
+// }
 
-//Calling Seeding Function
-seedData(users)
-  .then(() => {
-    console.log("Data Inserted Ssuccessfully");
-  })
-  .catch((err) => {
-    console.log("Problem while inserting ---------->", err.message);
-  });
+// //Calling Seeding Function
+// seedData(users)
+//   .then(() => {
+//     console.log("Data Inserted Ssuccessfully");
+//   })
+//   .catch((err) => {
+//     console.log("Problem while inserting ---------->", err.message);
+//   });
 
 module.exports = Users;
