@@ -3,17 +3,11 @@ const app = require("./app");
 
 const PORT = process.env.PORT || 3000;
 
-const server = app.listen(PORT, () => {
-  console.log(
-    `🚀 Server running on port ${PORT} [${process.env.NODE_ENV || "development"}]`,
-  );
-});
-
 // ─── Graceful Shutdown ────────────────────────────────────────────────────────
 const shutdown = (signal) => {
   console.log(`\n${signal} received. Shutting down gracefully...`);
   server.close(() => {
-    console.log("✅ HTTP server closed.");
+    console.log("HTTP server closed.");
     process.exit(0);
   });
 };
