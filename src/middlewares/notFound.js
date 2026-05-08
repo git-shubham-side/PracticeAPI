@@ -2,5 +2,5 @@
 module.exports = (req, res) => {
   res
     .status(404)
-    .json({ success: false, message: `Route ${req.originalUrl} not found` });
+    .json({ success: false, message: `Route ${req.originalUrl} not found!` });
 };
