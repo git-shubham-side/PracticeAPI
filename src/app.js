@@ -19,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //__________________Controllers  ___________________________________________________________________
 const userController = require("./controllers/users");
+const animalController = require("./controllers/animals");
 
 // ─── Rate Limiting ────────────────────────────────────────────────────────────
 const limiter = rateLimit({
@@ -42,7 +43,10 @@ app.get("/api/v1", (req, res) => {
 
 //Users Data
 app.get("/api/v1/users", userController);
+//---Animals Data ---
+app.get("/api/v1/animals", animalController);
 
+//---------------------
 // ─── 404 & Error Handler ─────────────────────────────────────────────────────
 app.use(notFound);
 app.use(errorHandler);
