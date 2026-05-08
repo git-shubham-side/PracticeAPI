@@ -21,7 +21,7 @@ A free, open REST API built for beginners who want to practice real-world API in
 ## 🌐 Base URL
 
 ```
-https://practiceapi.yoursite.com/api/v1
+https://localhost:3000/api/v1
 ```
 
 ---
@@ -111,4 +111,4 @@ Pull requests are welcome! If you're a beginner and want to add more endpoints o
 
 ---
 
-Built with ❤️ for beginners by [@git-shubham-side](https://github.com/git-shubham-side)
+Built for beginners by [@git-shubham-side](https://github.com/git-shubham-side)
