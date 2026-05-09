@@ -55,7 +55,8 @@ app.get("/api/v1/users", userController);
 app.get("/api/v1/animals", animalController);
 //Location Data
 app.get("/api/v1/locations", locationController);
-
+//Finanace
+app.get("/api/v1/finance");
 //---------------------
 // ─── 404 & Error Handler ─────────────────────────────────────────────────────
 app.use(notFound);
