@@ -24,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 //__________________Controllers  ___________________________________________________________________
 const userController = require("./controllers/users");
 const animalController = require("./controllers/animals");
+const locationController = require("./controllers/locations");
 
 // ─── Rate Limiting ────────────────────────────────────────────────────────────
 const limiter = rateLimit({
@@ -34,10 +35,13 @@ const limiter = rateLimit({
 app.use("/api", limiter);
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
-// app.use("/api/v1", routes); // unused removed later
+// app.use("/api/v1", routes);
+app.get("/", (req, res) => {
+  res.redirect("/api/v1/home");
+});
 
 // Home Route
-app.get("/", (req, res) => {
+app.get("/api/v1/home", (req, res) => {
   res.render("landing", {
     title: "PracticeAPI | SaaS Landing",
     subtitle:
@@ -45,15 +49,12 @@ app.get("/", (req, res) => {
   });
 });
 
-// Welcome + Home Route
-app.get("/api/v1", (req, res) => {
-  res.json({ message: "welcome to PracticeAPI" });
-});
-
 //Users Data
 app.get("/api/v1/users", userController);
 //---Animals Data ---
 app.get("/api/v1/animals", animalController);
+//Location Data
+app.get("/api/v1/locations", locationController);
 
 //---------------------
 // ─── 404 & Error Handler ─────────────────────────────────────────────────────
