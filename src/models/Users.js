@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 
-const generateData = require("../utils/generateData");
+// const generateData = require("../utils/generateData"); // unused removed later
 const connectDB = require("../connectDB/db");
 //DB Connection
 connectDB(process.env.MONGODB_URI);

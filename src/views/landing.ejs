@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PracticeAPI — Free REST API for Beginners</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #080c10;
+      --bg2:     #0d1117;
+      --surface: #111820;
+      --border:  #1e2d3d;
+      --border2: #243040;
+      --text:    #e2eaf4;
+      --muted:   #5a7393;
+      --accent:  #3b82f6;
+      --accent2: #06b6d4;
+      --green:   #22d3a0;
+      --red:     #f87171;
+      --yellow:  #fbbf24;
+      --purple:  #a78bfa;
+      --mono:    'Geist Mono', monospace;
+      --serif:   'Instrument Serif', serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black 40%, transparent 100%);
+      opacity: 0.35; pointer-events: none;
+    }
+
+    .hero-glow {
+      position: absolute; top: -180px; left: 50%; transform: translateX(-50%);
+      width: 700px; height: 500px;
+      background: radial-gradient(ellipse, rgba(59,130,246,0.16) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 56px;
+      background: rgba(8,12,16,0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-size: 15px; font-weight: 700; letter-spacing: -0.02em;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-logo .dot { color: var(--accent); }
+    .nav-links { display: flex; gap: 24px; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-right { display: flex; gap: 10px; }
+    .btn-ghost {
+      padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border2);
+      color: var(--muted); font-family: var(--mono); font-size: 13px;
+      background: transparent; cursor: pointer; text-decoration: none;
+      transition: all .2s; display: inline-flex; align-items: center;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-primary {
+      padding: 6px 16px; border-radius: 6px; border: 1px solid var(--accent);
+      background: rgba(59,130,246,0.12); color: var(--accent);
+      font-family: var(--mono); font-size: 13px; cursor: pointer;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all .2s;
+    }
+    .btn-primary:hover { background: rgba(59,130,246,0.25); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; z-index: 1;
+      text-align: center; padding: 100px 1rem 80px;
+      max-width: 860px; margin: 0 auto;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 999px;
+      border: 1px solid rgba(34,211,160,0.3); background: rgba(34,211,160,0.06);
+      color: var(--green); font-size: 12px; margin-bottom: 28px;
+      animation: fadeUp .6s ease both;
+    }
+    .badge .pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .hero h1 {
+      font-family: var(--serif); font-size: clamp(42px, 7vw, 74px);
+      font-weight: 400; line-height: 1.05; letter-spacing: -0.02em;
+      color: var(--text); animation: fadeUp .6s .1s ease both;
+    }
+    .hero h1 em {
+      font-style: italic; color: transparent;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; background-clip: text;
+    }
+    .hero p {
+      margin: 20px auto 0; max-width: 520px;
+      color: var(--muted); font-size: 15px; line-height: 1.7;
+      animation: fadeUp .6s .2s ease both;
+    }
+    .hero-actions {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+      margin-top: 36px; animation: fadeUp .6s .3s ease both;
+    }
+    .btn-lg {
+      padding: 10px 22px; border-radius: 8px; font-size: 14px;
+      font-family: var(--mono); cursor: pointer; transition: all .2s;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-lg.primary { background: var(--accent); border: 1px solid var(--accent); color: #fff; }
+    .btn-lg.primary:hover { background: #2563eb; }
+    .btn-lg.ghost { background: transparent; border: 1px solid var(--border2); color: var(--muted); }
+    .btn-lg.ghost:hover { color: var(--text); }
+    .base-url-pill {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin: 48px auto 0; padding: 10px 20px; border-radius: 8px;
+      border: 1px solid var(--border2); background: var(--surface);
+      font-size: 13px; color: var(--muted); animation: fadeUp .6s .4s ease both;
+    }
+    .base-url-pill code { color: var(--accent2); }
+    .copy-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 12px; padding: 2px 6px;
+      border-radius: 4px; font-family: var(--mono); transition: all .2s;
+    }
+    .copy-btn:hover { background: var(--border); color: var(--text); }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── SECTION ── */
+    .section {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto; padding: 80px 1.5rem;
+    }
+    .section-label {
+      font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--serif); font-size: clamp(28px, 4vw, 42px);
+      font-weight: 400; line-height: 1.1; color: var(--text); margin-bottom: 16px;
+    }
+    .section-title em { font-style: italic; color: var(--accent2); }
+    .section-sub {
+      color: var(--muted); font-size: 14px; max-width: 480px;
+      line-height: 1.7; margin-bottom: 48px;
+    }
+
+    /* ── CATEGORIES ── */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(198px, 1fr));
+      gap: 10px;
+    }
+    .cat-card {
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 16px 18px; background: var(--surface);
+      display: flex; align-items: center; gap: 12px;
+      transition: border-color .2s, background .2s, transform .15s;
+      position: relative; overflow: hidden; cursor: default;
+    }
+    .cat-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(59,130,246,0.04), transparent);
+      opacity: 0; transition: opacity .2s;
+    }
+    .cat-card:hover { border-color: var(--border2); background: #131e2a; transform: translateY(-1px); }
+    .cat-card:hover::after { opacity: 1; }
+    .cat-icon {
+      font-size: 20px; width: 38px; height: 38px; border-radius: 8px;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .cat-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .cat-route { font-size: 11px; color: var(--muted); }
+    .cat-route span { color: var(--purple); }
+    .cat-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 6px var(--green);
+      margin-left: auto; flex-shrink: 0;
+    }
+
+    /* ── ENDPOINTS ── */
+    .endpoints-grid {
+      display: grid; gap: 1px;
+      border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; background: var(--border);
+    }
+    .endpoint-row {
+      display: grid; grid-template-columns: 90px 1fr 1fr;
+      align-items: center; background: var(--surface);
+      padding: 14px 20px; transition: background .2s;
+    }
+    .endpoint-row:hover { background: #151f2b; }
+    .endpoint-row.header {
+      background: var(--bg2); font-size: 11px;
+      text-transform: uppercase; letter-spacing: .08em; color: var(--muted);
+    }
+    .method {
+      font-weight: 600; font-size: 12px; padding: 3px 8px;
+      border-radius: 4px; display: inline-block; width: fit-content;
+    }
+    .GET    { background:rgba(34,211,160,0.12); color:var(--green);  border:1px solid rgba(34,211,160,0.25); }
+    .POST   { background:rgba(59,130,246,0.12); color:var(--accent); border:1px solid rgba(59,130,246,0.25); }
+    .PUT    { background:rgba(251,191,36,0.1);  color:var(--yellow); border:1px solid rgba(251,191,36,0.25); }
+    .DELETE { background:rgba(248,113,113,0.1); color:var(--red);    border:1px solid rgba(248,113,113,0.25); }
+    .endpoint-path { font-size: 13px; color: var(--text); }
+    .endpoint-path span { color: var(--purple); }
+    .endpoint-desc { font-size: 13px; color: var(--muted); }
+
+    /* ── CODE ── */
+    .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width:700px) { .demo-grid { grid-template-columns: 1fr; } }
+    .code-card { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--bg2); }
+    .code-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px; border-bottom: 1px solid var(--border); background: var(--surface);
+    }
+    .code-header .dots { display: flex; gap: 6px; }
+    .code-header .dots span { width: 10px; height: 10px; border-radius: 50%; }
+    .d1{background:#ff5f57} .d2{background:#febb2c} .d3{background:#28c940}
+    .code-title { font-size: 12px; color: var(--muted); }
+    .code-lang  { font-size: 11px; color: var(--muted); }
+    pre {
+      padding: 20px; font-family: var(--mono); font-size: 12.5px;
+      line-height: 1.7; overflow-x: auto; color: var(--text);
+    }
+    .kw{color:#c792ea} .fn{color:#82aaff} .str{color:#c3e88d}
+    .num{color:#f78c6c} .cmt{color:#546e7a;font-style:italic} .key{color:var(--accent2)}
+
+    /* ── FEATURES ── */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .feature-card {
+      border: 1px solid var(--border); border-radius: 12px;
+      padding: 24px; background: var(--surface);
+      position: relative; overflow: hidden; transition: border-color .2s, background .2s;
+    }
+    .feature-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0; transition: opacity .3s;
+    }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-card:hover { border-color: var(--border2); background: #111d28; }
+    .feature-icon { font-size: 20px; margin-bottom: 14px; }
+    .feature-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .feature-desc  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── INSTALL ── */
+    .install-box {
+      border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; background: var(--bg2); max-width: 600px;
+    }
+    .install-box .ib-header {
+      display: flex; align-items: center; gap: 8px; padding: 12px 16px;
+      border-bottom: 1px solid var(--border); background: var(--surface);
+      font-size: 12px; color: var(--muted);
+    }
+    .ti { color: var(--green); }
+    .tools-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 40px; }
+    .tool-chip {
+      padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border2);
+      background: var(--surface); color: var(--muted); font-size: 13px; transition: all .2s;
+    }
+    .tool-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 0 1.5rem; }
+
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border); padding: 32px 2rem;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    footer .fl { font-size: 13px; color: var(--muted); }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .gh-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border2);
+      color: var(--muted); text-decoration: none; font-size: 13px; transition: all .2s;
+    }
+    .gh-link:hover { color: var(--text); }
+
+    .reveal { opacity: 0; transform: translateY(20px); transition: opacity .5s ease, transform .5s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .categories-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#"><span class="dot">⬡</span> PracticeAPI</a>
+  <ul class="nav-links">
+    <li><a href="#categories">Categories</a></li>
+    <li><a href="#endpoints">Endpoints</a></li>
+    <li><a href="#examples">Examples</a></li>
+    <li><a href="#quickstart">Quickstart</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="btn-ghost" href="https://github.com/git-shubham-side/PracticeAPI" target="_blank">GitHub</a>
+    <a class="btn-primary" href="#quickstart">Get Started →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="badge"><span class="pulse"></span>Free · No Auth · No Signup Required</div>
+  <h1>A REST API built for<br/><em>real practice</em></h1>
+  <p>
+    Stop reading about APIs. Start calling them. PracticeAPI gives you clean endpoints,
+    real JSON, and proper error codes — across 20+ data categories so you never run out of things to build.
+  </p>
+  <div class="hero-actions">
+    <a class="btn-lg primary" href="#quickstart">↓ &nbsp;Clone & Run</a>
+    <a class="btn-lg ghost" href="#categories">Browse Categories</a>
+  </div>
+  <div class="base-url-pill">
+    <span>Base URL</span>
+    <code>localhost:3000/api/v1</code>
+    <button class="copy-btn" onclick="copyBase()">copy</button>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section" id="categories">
+  <p class="section-label reveal">Data Categories</p>
+  <h2 class="section-title reveal">20+ categories. <em>Endless things to build.</em></h2>
+  <p class="section-sub reveal">
+    Every category returns realistic, structured JSON — ready to plug into your frontend,
+    test your error handling, or practice any HTTP method.
+  </p>
+
+  <div class="categories-grid">
+    <% const cats = [
+      { icon: '👤', name: 'Person',       slug: 'person' },
+      { icon: '📍', name: 'Location',     slug: 'location' },
+      { icon: '📅', name: 'Date',         slug: 'date' },
+      { icon: '💰', name: 'Finance',      slug: 'finance' },
+      { icon: '🛒', name: 'Commerce',     slug: 'commerce' },
+      { icon: '🌐', name: 'Localization', slug: 'localization' },
+      { icon: '✈️', name: 'Airline',      slug: 'airline' },
+      { icon: '🐾', name: 'Animal',       slug: 'animal' },
+      { icon: '📚', name: 'Book',         slug: 'book' },
+      { icon: '🎨', name: 'Color',        slug: 'color' },
+      { icon: '🏢', name: 'Company',      slug: 'company' },
+      { icon: '🗄️', name: 'Database',    slug: 'database' },
+      { icon: '🍜', name: 'Food',         slug: 'food' },
+      { icon: '🖼️', name: 'Images',      slug: 'images' },
+      { icon: '📝', name: 'Lorem',        slug: 'lorem' },
+      { icon: '🎵', name: 'Music',        slug: 'music' },
+      { icon: '📱', name: 'Phones',       slug: 'phones' },
+      { icon: '🔬', name: 'Science',      slug: 'science' },
+      { icon: '🚗', name: 'Vehicle',      slug: 'vehicle' },
+      { icon: '💬', name: 'Words',        slug: 'words' }
+    ]; %>
+    <% cats.forEach(cat => { %>
+    <div class="cat-card reveal">
+      <div class="cat-icon"><%= cat.icon %></div>
+      <div>
+        <div class="cat-name"><%= cat.name %></div>
+        <div class="cat-route">/api/v1/<span><%= cat.slug %></span></div>
+      </div>
+      <div class="cat-dot"></div>
+    </div>
+    <% }); %>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ENDPOINTS -->
+<section class="section" id="endpoints">
+  <p class="section-label reveal">Routes</p>
+  <h2 class="section-title reveal">Full CRUD. <em>Every category.</em></h2>
+  <p class="section-sub reveal">
+    Each category supports the same five routes — learn one, know them all.
+  </p>
+  <div class="endpoints-grid reveal">
+    <div class="endpoint-row header">
+      <div>Method</div><div>Route</div><div>Description</div>
+    </div>
+    <div class="endpoint-row">
+      <div><span class="method GET">GET</span></div>
+      <div class="endpoint-path">/:category</div>
+      <div class="endpoint-desc">Fetch all records</div>
+    </div>
+    <div class="endpoint-row">
+      <div><span class="method GET">GET</span></div>
+      <div class="endpoint-path">/:category/<span>:id</span></div>
+      <div class="endpoint-desc">Fetch single record by ID</div>
+    </div>
+    <div class="endpoint-row">
+      <div><span class="method POST">POST</span></div>
+      <div class="endpoint-path">/:category</div>
+      <div class="endpoint-desc">Create a new record</div>
+    </div>
+    <div class="endpoint-row">
+      <div><span class="method PUT">PUT</span></div>
+      <div class="endpoint-path">/:category/<span>:id</span></div>
+      <div class="endpoint-desc">Update an existing record</div>
+    </div>
+    <div class="endpoint-row">
+      <div><span class="method DELETE">DELETE</span></div>
+      <div class="endpoint-path">/:category/<span>:id</span></div>
+      <div class="endpoint-desc">Delete a record</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- EXAMPLES -->
+<section class="section" id="examples">
+  <p class="section-label reveal">Examples</p>
+  <h2 class="section-title reveal">Request → <em>Response.</em></h2>
+  <p class="section-sub reveal">Clean JSON in, clean JSON out. Same pattern across every category.</p>
+
+  <div class="demo-grid">
+    <div class="code-card reveal">
+      <div class="code-header">
+        <div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+        <div class="code-title">GET /person/1</div>
+        <div class="code-lang">json</div>
+      </div>
+      <pre>{
+  <span class="key">"id"</span>:        <span class="num">1</span>,
+  <span class="key">"name"</span>:      <span class="str">"Riya Sharma"</span>,
+  <span class="key">"email"</span>:     <span class="str">"riya@example.com"</span>,
+  <span class="key">"role"</span>:      <span class="str">"user"</span>,
+  <span class="key">"createdAt"</span>: <span class="str">"2024-01-15T10:30:00Z"</span>
+}</pre>
+    </div>
+
+    <div class="code-card reveal">
+      <div class="code-header">
+        <div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+        <div class="code-title">GET /vehicle/3</div>
+        <div class="code-lang">json</div>
+      </div>
+      <pre>{
+  <span class="key">"id"</span>:    <span class="num">3</span>,
+  <span class="key">"make"</span>:  <span class="str">"Toyota"</span>,
+  <span class="key">"model"</span>: <span class="str">"Innova"</span>,
+  <span class="key">"year"</span>:  <span class="num">2021</span>,
+  <span class="key">"fuel"</span>:  <span class="str">"Diesel"</span>,
+  <span class="key">"color"</span>: <span class="str">"Pearl White"</span>
+}</pre>
+    </div>
+
+    <div class="code-card reveal">
+      <div class="code-header">
+        <div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+        <div class="code-title">Axios · Fetch Books</div>
+        <div class="code-lang">js</div>
+      </div>
+      <pre><span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">axios</span>.<span class="fn">get</span>(
+  <span class="str">'/api/v1/book'</span>
+);
+<span class="cmt">// res.data → array of books</span>
+<span class="cmt">// res.status → 200 OK</span>
+<span class="fn">console</span>.<span class="fn">log</span>(res.data[<span class="num">0</span>].title);</pre>
+    </div>
+
+    <div class="code-card reveal">
+      <div class="code-header">
+        <div class="dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+        <div class="code-title">fetch() · Create Food</div>
+        <div class="code-lang">js</div>
+      </div>
+      <pre><span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(
+  <span class="str">'/api/v1/food'</span>, {
+  method: <span class="str">'POST'</span>,
+  headers: {
+    <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>
+  },
+  body: <span class="fn">JSON</span>.<span class="fn">stringify</span>({
+    name: <span class="str">'Vada Pav'</span>,
+    type: <span class="str">'street food'</span>
+  })
+});</pre>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- FEATURES -->
+<section class="section">
+  <p class="section-label reveal">Why PracticeAPI</p>
+  <h2 class="section-title reveal">Built to teach real habits.</h2>
+  <p class="section-sub reveal">Most practice APIs are fake. This one behaves exactly like production.</p>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Zero Friction</div>
+      <div class="feature-desc">No API keys. No OAuth. Clone and start hitting endpoints in 60 seconds flat.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🔢</div>
+      <div class="feature-title">Real Status Codes</div>
+      <div class="feature-desc">404 on missing records. 400 on bad input. 201 on create. Proper HTTP semantics throughout.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🗂️</div>
+      <div class="feature-title">20+ Categories</div>
+      <div class="feature-desc">From people and books to airlines and science — enough variety to build real projects.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🧩</div>
+      <div class="feature-title">MVC Structure</div>
+      <div class="feature-desc">Routes, controllers, services, schemas — cleanly separated so you can read and learn the pattern.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- QUICKSTART -->
+<section class="section" id="quickstart">
+  <p class="section-label reveal">Quickstart</p>
+  <h2 class="section-title reveal">Running in <em>under a minute.</em></h2>
+  <p class="section-sub reveal">Clone, install, start. That's the whole setup.</p>
+  <div class="install-box reveal">
+    <div class="ib-header">
+      <span class="ti">$</span> bash · Terminal
+    </div>
+    <pre><span class="cmt"># 1. Clone the repo</span>
+<span class="fn">git</span> clone https://github.com/git-shubham-side/PracticeAPI
+
+<span class="cmt"># 2. Install dependencies</span>
+<span class="fn">cd</span> PracticeAPI <span class="kw">&&</span> <span class="fn">npm</span> install
+
+<span class="cmt"># 3. Start the server</span>
+<span class="fn">npm</span> start
+
+<span class="cmt"># → http://localhost:3000 ✓</span></pre>
+  </div>
+  <p class="section-label reveal" style="margin-top:40px;margin-bottom:12px;">Test With</p>
+  <div class="tools-row reveal">
+    <div class="tool-chip">Postman</div>
+    <div class="tool-chip">Thunder Client</div>
+    <div class="tool-chip">Axios</div>
+    <div class="tool-chip">fetch()</div>
+    <div class="tool-chip">curl</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fl">Built for beginners by <a href="https://github.com/git-shubham-side" target="_blank">@git-shubham-side</a></div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <span class="fl">MIT License</span>
+    <a class="gh-link" href="https://github.com/git-shubham-side/PracticeAPI" target="_blank">★ Star on GitHub</a>
+  </div>
+</footer>
+
+<script>
+  function copyBase() {
+    navigator.clipboard.writeText('https://localhost:3000/api/v1');
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'copied!';
+    setTimeout(() => btn.textContent = 'copy', 2000);
+  }
+  const observer = new IntersectionObserver(
+    entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
+  );
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

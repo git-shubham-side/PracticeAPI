@@ -1,20 +1,28 @@
-person
-location
-date
-finance
-commerce
-localization
-airline
-animal
-book
-color
-company
-database
-food
-images
-lorem
-music
-phones
-science
-vehicle
-words
+
+        CATEGORY DIRECTORY
+═══════════════════════════════════════
+
+➤ 👤 Person ++
+➤ 📍 Location
+➤ 📅 Date
+➤ 💰 Finance
+➤ 🛒 Commerce
+➤ 🌐 Localization
+➤ ✈️ Airline
+➤ 🐾 Animal ++
+➤ 📚 Book
+➤ 🎨 Color
+➤ 🏢 Company
+➤ 🗄️ Database
+➤ 🍔 Food
+➤ 🖼️ Images
+➤ 📝 Lorem
+➤ 🎵 Music
+➤ 📱 Phones
+➤ 🔬 Science
+➤ 🚗 Vehicle
+➤ 🔤 Words
+
+═══════════════════════════════════════
+      ★ Modern Text File Layout ★
+═══════════════════════════════════════

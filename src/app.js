@@ -5,8 +5,12 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
-const routes = require("./routes");
+// const routes = require("./routes"); // unused removed later
 const app = express();
+
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+app.use(express.static(path.join(__dirname, "public")));
 
 // ─── Security & Middleware ────────────────────────────────────────────────────
 const errorHandler = require("./middlewares/errorHandler");
@@ -30,13 +34,18 @@ const limiter = rateLimit({
 app.use("/api", limiter);
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
-// app.use("/api/v1", routes);
+// app.use("/api/v1", routes); // unused removed later
 
-//Home Route
+// Home Route
 app.get("/", (req, res) => {
-  res.redirect("/api/v1");
+  res.render("landing", {
+    title: "PracticeAPI | SaaS Landing",
+    subtitle:
+      "Build fast APIs with friendly tooling, modern architecture, and enterprise-ready reliability.",
+  });
 });
-//Welcome + Home Route
+
+// Welcome + Home Route
 app.get("/api/v1", (req, res) => {
   res.json({ message: "welcome to PracticeAPI" });
 });

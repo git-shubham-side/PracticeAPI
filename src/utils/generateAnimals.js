@@ -1,7 +1,7 @@
 const { Faker, en_IN, en } = require("@faker-js/faker");
 const indianFaker = new Faker({ locale: [en_IN, en] });
-const connectDB = require("../connectDB/db");
-const generateData = require("./generateData");
+// const connectDB = require("../connectDB/db"); // unused removed later
+// const generateData = require("./generateData"); // unused removed later
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 // const Animal = require("../models/Animals");
