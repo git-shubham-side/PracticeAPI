@@ -1,10 +1,4 @@
-const mongoose = require("mongoose");
-const Location = require("../models/Location");
-const connectDB = require("../connectDB/db");
-connectDB();
+// unused removed later: legacy controller replaced by datasets controller
+const { createDatasetHandler } = require("./datasets");
 
-module.exports = async (req, res) => {
-  const count = Number(req.query.count || 10);
-  const result = await Location.find({}).limit(count);
-  res.json(result);
-};
+module.exports = createDatasetHandler("locations");

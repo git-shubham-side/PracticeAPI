@@ -5,7 +5,7 @@
 ➤ 👤 Person ++
 ➤ 📍 Location ++
 ➤ 📅 Date
-➤ 💰 Finance
+➤ 💰 Finance ++
 ➤ 🛒 Commerce
 ➤ 🌐 Localization
 ➤ ✈️ Airline

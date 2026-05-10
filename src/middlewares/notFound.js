@@ -1,22 +1,22 @@
 const homeUrl = ["/api/v1/", "/api", "/v1", "/api/v1"];
 const underConstructionRoutes = [
   "/api/v1/home/locations",
-  "/api/v1/date",
-  "/api/v1/finance",
-  "/api/v1/commerce",
-  "/api/v1/airline",
-  "/api/v1/book",
-  "/api/v1/color",
-  "/api/v1/company",
-  "/api/v1/database",
-  "/api/v1/food",
-  "/api/v1/images",
-  "/api/v1/lorem",
-  "/api/v1/music",
-  "/api/v1/phones",
-  "/api/v1/science",
-  "/api/v1/vehicle",
-  "/api/v1/words",
+  // "/api/v1/date", // unused removed later
+  // "/api/v1/finance", // unused removed later
+  // "/api/v1/commerce", // unused removed later
+  // "/api/v1/airline", // unused removed later
+  // "/api/v1/book", // unused removed later
+  // "/api/v1/color", // unused removed later
+  // "/api/v1/company", // unused removed later
+  // "/api/v1/database", // unused removed later
+  // "/api/v1/food", // unused removed later
+  // "/api/v1/images", // unused removed later
+  // "/api/v1/lorem", // unused removed later
+  // "/api/v1/music", // unused removed later
+  // "/api/v1/phones", // unused removed later
+  // "/api/v1/science", // unused removed later
+  // "/api/v1/vehicle", // unused removed later
+  // "/api/v1/words", // unused removed later
 ];
 
 // notFound.js

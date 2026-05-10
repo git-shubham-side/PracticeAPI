@@ -1,3 +1,4 @@
+// unused removed later: app.js does not mount this legacy users controller
 const userService = require("./user.service");
 const asyncHandler = require("../../middlewares/asyncHandler");
 

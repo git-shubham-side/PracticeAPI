@@ -1,3 +1,4 @@
+// unused removed later: helper examples are not imported anywhere in the app
 const { faker } = require("@faker-js/faker");
 
 // Indian context ke liye locale set karo
@@ -40,12 +41,11 @@ function getFakeDateBetween(from, to) {
   });
 }
 
-// --- Usage Examples ---
-console.log("Recent Date       :", formatIndianDate(getFakeDate()));
-console.log("DOB (18-60 yrs)   :", formatIndianDate(getFakeDOB()));
-console.log("Past Date         :", formatIndianDate(getFakePastDate(3)));
-console.log("Future Date       :", formatIndianDate(getFakeFutureDate(1)));
-console.log(
-  "Between Range     :",
-  formatIndianDate(getFakeDateBetween("2020-01-01", "2024-12-31")),
-);
+// console.log("Recent Date       :", formatIndianDate(getFakeDate())); // unused removed later
+// console.log("DOB (18-60 yrs)   :", formatIndianDate(getFakeDOB())); // unused removed later
+// console.log("Past Date         :", formatIndianDate(getFakePastDate(3))); // unused removed later
+// console.log("Future Date       :", formatIndianDate(getFakeFutureDate(1))); // unused removed later
+// console.log( // unused removed later
+//   "Between Range     :",
+//   formatIndianDate(getFakeDateBetween("2020-01-01", "2024-12-31")),
+// );

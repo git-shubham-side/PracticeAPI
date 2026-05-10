@@ -1,3 +1,4 @@
+// unused removed later: manual animal seed helper is not part of the current app flow
 // const connectDB = require("../connectDB/db"); // unused removed later
 // Function to Generate  Data into animals
 // const generateAnimals = require("../utils/generateAnimals"); // unused removed later

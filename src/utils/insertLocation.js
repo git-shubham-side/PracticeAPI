@@ -1,8 +1,9 @@
+// unused removed later: manual seed script is not part of the current app flow
 const Location = require("../models/Location");
 const genLocation = require("./genLocation");
 const DB = require("../connectDB/db");
 const mongoose = require("mongoose");
-DB();
+// DB(); // unused removed later
 
 async function locationSeed() {
   const locationData = genLocation(1);

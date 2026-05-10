@@ -1,8 +1,9 @@
+// unused removed later: manual seed script is not part of the current app flow
 const Finance = require("../../../models/Finance");
 const generateFinanceData = require("../../DataGeneration/Finance/financeGeneration");
 const mongoose = require("mongoose");
 const connDb = require("../../../connectDB/db");
-connDb();
+// connDb(); // unused removed later
 
 async function financeDataSeeding() {
   try {

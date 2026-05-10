@@ -1,3 +1,4 @@
+// unused removed later: validation schema belongs to an unmounted legacy route
 const Joi = require("joi");
 
 exports.createUserSchema = Joi.object({

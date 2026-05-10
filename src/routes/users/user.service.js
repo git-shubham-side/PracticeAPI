@@ -1,4 +1,4 @@
-// Replace these with actual DB calls (Mongoose, Prisma, etc.)
+// unused removed later: mock in-memory service is not used by the current app
 const users = [{ id: "1", name: "Shubh", email: "shubh@example.com" }];
 
 exports.findAll = async () => users;

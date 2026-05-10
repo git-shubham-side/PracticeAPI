@@ -1,4 +1,3 @@
-// models/Finance.js
 const mongoose = require("mongoose");
 
 const financeSchema = new mongoose.Schema(
@@ -61,4 +60,4 @@ const financeSchema = new mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model("Finance", financeSchema);
+module.exports = mongoose.models.Finance || mongoose.model("Finance", financeSchema);

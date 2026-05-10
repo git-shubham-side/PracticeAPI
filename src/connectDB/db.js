@@ -1,9 +1,19 @@
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const mongoose = require("mongoose");
-module.exports = connectDB = async function () {
-  mongoose.connect(process.env.MONGODB_URI);
-};
-connectDB().catch((err) => {
-  console.log(err.message);
-});
+
+let connectionPromise;
+
+async function connectDB(uri = process.env.MONGODB_URI) {
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
+
+  if (!connectionPromise) {
+    connectionPromise = mongoose.connect(uri);
+  }
+
+  return connectionPromise;
+}
+
+module.exports = connectDB;

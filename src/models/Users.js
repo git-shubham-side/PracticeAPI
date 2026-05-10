@@ -1,11 +1,4 @@
 const mongoose = require("mongoose");
-const path = require("path");
-require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
-
-// const generateData = require("../utils/generateData"); // unused removed later
-const connectDB = require("../connectDB/db");
-//DB Connection
-connectDB(process.env.MONGODB_URI);
 
 const userSchema = new mongoose.Schema({
   userId: {
@@ -41,25 +34,6 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
-});
+}, { timestamps: true });
 
-const Users = mongoose.model("Users", userSchema);
-
-//Data Seeding
-// const users = generateData();
-
-// async function seedData(data) {
-//   const result = await Users.create(data);
-//   console.log(result);
-// }
-
-// //Calling Seeding Function
-// seedData(users)
-//   .then(() => {
-//     console.log("Data Inserted Ssuccessfully");
-//   })
-//   .catch((err) => {
-//     console.log("Problem while inserting ---------->", err.message);
-//   });
-
-module.exports = Users;
+module.exports = mongoose.models.Users || mongoose.model("Users", userSchema);
