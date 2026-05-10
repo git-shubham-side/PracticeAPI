@@ -1,3 +1,4 @@
+const homeUrl = ["/api/v1/", "/api", "/v1", "/api/v1"];
 const underConstructionRoutes = [
   "/api/v1/home/locations",
   "/api/v1/date",
@@ -20,10 +21,13 @@ const underConstructionRoutes = [
 
 // notFound.js
 module.exports = (req, res) => {
+  if (homeUrl.includes(req.url)) {
+    return res.redirect("/api/v1/home");
+  }
   if (underConstructionRoutes.includes(req.url)) {
     let route = req.url;
     if (req.accepts("html")) {
-      return res.status(503).render("under-construction", { route });
+      return res.status(503).render("under-construction", { route }); // Testing  left
     }
     return res.status(503).json({
       message: "This page is under construction!",
