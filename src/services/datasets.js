@@ -488,18 +488,34 @@ async function insertSafely(model, documents) {
 
 async function ensureMinimumDocuments(datasetKey) {
   const dataset = getDatasetOrThrow(datasetKey);
-  const currentCount = await dataset.model.countDocuments();
+  const initialCount = await dataset.model.countDocuments();
+  let currentCount = initialCount;
+  let attempts = 0;
 
-  if (currentCount >= dataset.seedCount) {
-    return currentCount;
+  while (currentCount < dataset.seedCount) {
+    if (attempts >= 5) {
+      const error = new Error(
+        `Unable to seed dataset "${datasetKey}" to target count ${dataset.seedCount}. Current count: ${currentCount}.`,
+      );
+      error.statusCode = 500;
+      throw error;
+    }
+
+    const missingCount = dataset.seedCount - currentCount;
+    const documents = dataset.generate(missingCount);
+
+    await insertSafely(dataset.model, documents);
+    currentCount = await dataset.model.countDocuments();
+    attempts += 1;
   }
 
-  const missingCount = dataset.seedCount - currentCount;
-  const documents = dataset.generate(missingCount);
-
-  await insertSafely(dataset.model, documents);
-
-  return dataset.model.countDocuments();
+  return {
+    key: datasetKey,
+    label: dataset.label,
+    count: currentCount,
+    seedCount: dataset.seedCount,
+    seeded: Math.max(currentCount - initialCount, 0),
+  };
 }
 
 async function listDatasetRecords(datasetKey, countValue) {
@@ -512,9 +528,13 @@ async function listDatasetRecords(datasetKey, countValue) {
 }
 
 async function warmDatasets(keys = Object.keys(datasets)) {
+  const summary = [];
+
   for (const key of keys) {
-    await ensureMinimumDocuments(key);
+    summary.push(await ensureMinimumDocuments(key));
   }
+
+  return summary;
 }
 
 function listDatasets() {

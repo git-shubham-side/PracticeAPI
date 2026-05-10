@@ -143,7 +143,16 @@ process.on("unhandledRejection", (error) => {
 async function startServer() {
   try {
     await connectDB();
-    await warmDatasets();
+    const bootstrapSummary = await warmDatasets();
+
+    console.log("Dataset bootstrap complete:");
+    bootstrapSummary.forEach((entry) => {
+      const seededMessage =
+        entry.seeded > 0 ? `${entry.seeded} inserted` : "already ready";
+      console.log(
+        `- ${entry.key}: ${entry.count}/${entry.seedCount} (${seededMessage})`,
+      );
+    });
 
     const PORT = process.env.PORT || 3000;
     server = app.listen(PORT, () => {
