@@ -1,67 +1,108 @@
 # PracticeAPI
 
-PracticeAPI is a beginner-friendly Express and MongoDB project that serves fake but realistic dataset APIs for frontend practice, API testing, and learning backend structure.
+> A beginner-friendly REST API server that serves fake but realistic datasets — perfect for frontend practice, API testing, and learning backend structure.
 
-The app boots with MongoDB, auto-seeds missing records with `@faker-js/faker`, and exposes category-based REST endpoints like users, animals, locations, finance, books, colors, science, vehicles, and more.
+---
+
+## Overview
+
+PracticeAPI is built with **Express** and **MongoDB**. It auto-seeds realistic dummy data using `@faker-js/faker` on startup and exposes clean, category-based REST endpoints under `/api/v1`.
+
+No setup headaches — just clone, install, and start hitting endpoints.
+
+---
 
 ## Tech Stack
 
-- Node.js
-- Express
-- MongoDB with Mongoose
-- Faker (`@faker-js/faker`)
-- EJS
-- Helmet, CORS, Morgan, Express Rate Limit
+| Layer | Technology |
+|---|---|
+| Runtime | Node.js |
+| Framework | Express |
+| Database | MongoDB + Mongoose |
+| Data Generation | `@faker-js/faker` |
+| Templating | EJS |
+| Security & Utilities | Helmet, CORS, Morgan, Express Rate Limit |
+
+---
 
 ## Features
 
-- Category-based REST API under `/api/v1`
-- Auto-seeding for all supported datasets
-- MongoDB-backed data storage
+- 20+ dataset categories under `/api/v1`
+- Auto-seeding on server start — no manual seed step needed
+- MongoDB-backed persistent storage
 - Health check endpoint
-- JSON error handling
-- Landing page at `/api/v1/home`
-- Rate limiting on `/api/*`
-- Query-based result limiting with `?count=`
+- Consistent JSON response structure
+- Rate limiting on all `/api/*` routes
+- `?count=` query param to control result size
+- EJS-rendered landing page at `/api/v1/home`
 
-## Project Layout
+---
 
-```text
+## Project Structure
+
+```
 PracticeAPI/
-|-- README.md
-|-- .env.example
-|-- categories.txt
-`-- src/
-    |-- app.js
-    |-- package.json
-    |-- connectDB/
-    |   `-- db.js
-    |-- controllers/
-    |   `-- datasets.js
-    |-- middlewares/
-    |   |-- asyncHandler.js
-    |   |-- errorHandler.js
-    |   |-- notFound.js
-    |   `-- validate.js
-    |-- models/
-    |   |-- Users.js
-    |   |-- Animals.js
-    |   |-- Location.js
-    |   |-- Finance.js
-    |   `-- category-specific models
-    |-- services/
-    |   `-- datasets.js
-    |-- utils/
-    |   `-- data generation and legacy seed helpers
-    `-- views/
-        |-- landing.ejs
-        |-- notfound.ejs
-        `-- under-construction.ejs
+├── README.md
+├── .env.example
+├── categories.txt
+└── src/
+    ├── app.js                  ← Entry point
+    ├── package.json
+    ├── connectDB/
+    │   └── db.js               ← MongoDB connection
+    ├── controllers/
+    │   └── datasets.js         ← Route handlers
+    ├── middlewares/
+    │   ├── asyncHandler.js
+    │   ├── errorHandler.js     ← JSON error responses
+    │   ├── notFound.js         ← 404 handler
+    │   └── validate.js
+    ├── models/
+    │   ├── Users.js
+    │   ├── Animals.js
+    │   ├── Location.js
+    │   ├── Finance.js
+    │   └── ...                 ← One model per category
+    ├── services/
+    │   └── datasets.js         ← Core dataset logic & seeding
+    ├── utils/
+    │   └── ...                 ← Data generation helpers
+    └── views/
+        ├── landing.ejs
+        ├── notfound.ejs
+        └── under-construction.ejs
 ```
 
-## Environment Variables
+---
 
-Create `src/.env` from the example below:
+## Getting Started
+
+### Prerequisites
+
+- Node.js v16+
+- MongoDB running locally (default: `mongodb://127.0.0.1:27017`)
+
+### Installation
+
+```bash
+# Clone the repo
+git clone <your-repo-url>
+cd PracticeAPI
+
+# Install dependencies
+cd src
+npm install
+```
+
+### Environment Setup
+
+Create `src/.env` based on the provided example:
+
+```bash
+cp .env.example src/.env
+```
+
+Default values:
 
 ```env
 MONGODB_URI=mongodb://127.0.0.1:27017/practiceAPI
@@ -69,59 +110,110 @@ PORT=3000
 ALLOWED_ORIGIN=*
 ```
 
-The project already includes `.env.example` with the same values.
-
-## Installation
-
-From the project root:
+### Run the Server
 
 ```bash
-cd src
-npm install
-```
-
-## Run Locally
-
-```bash
+# Development (with auto-reload)
 cd src
 npm run dev
-```
 
-Or:
-
-```bash
+# Production
 cd src
 npm start
 ```
 
-The server runs on:
+Server will be available at: `http://localhost:3000`
 
-```text
-http://localhost:3000
+---
+
+## How Auto-Seeding Works
+
+On every server start:
+
+1. MongoDB connection is established
+2. Each dataset collection is checked for minimum record count
+3. Any missing documents are generated with Faker and inserted automatically
+
+**Seed targets:**
+
+| Collections | Minimum Records |
+|---|---|
+| `users`, `animals`, `locations`, `finance` | 100 |
+| All other categories | 80 |
+
+---
+
+## API Reference
+
+### Base URLs
+
+| Purpose | URL |
+|---|---|
+| App root | `http://localhost:3000/` |
+| API landing page | `http://localhost:3000/api/v1/home` |
+| API base | `http://localhost:3000/api/v1` |
+
+---
+
+### Utility Endpoints
+
+| Method | Route | Description |
+|---|---|---|
+| `GET` | `/api/v1/health` | API health status and uptime |
+| `GET` | `/api/v1/categories` | All available categories with routes and aliases |
+| `GET` | `/api/v1/home` | Rendered landing page |
+
+---
+
+### Dataset Endpoints
+
+All dataset routes support the `?count=` query parameter (default: `10`, max: `100`).
+
+| Method | Route | Alias | Description |
+|---|---|---|---|
+| `GET` | `/api/v1/users` | — | User profiles |
+| `GET` | `/api/v1/animals` | — | Animal records |
+| `GET` | `/api/v1/locations` | — | Location data |
+| `GET` | `/api/v1/finance` | — | Finance records |
+| `GET` | `/api/v1/date` | `/dates` | Date data |
+| `GET` | `/api/v1/commerce` | — | Commerce data |
+| `GET` | `/api/v1/localization` | `/localizations` | Localization data |
+| `GET` | `/api/v1/airline` | `/airlines` | Airline data |
+| `GET` | `/api/v1/book` | `/books` | Book records |
+| `GET` | `/api/v1/color` | `/colors` | Color data |
+| `GET` | `/api/v1/company` | `/companies` | Company records |
+| `GET` | `/api/v1/database` | `/databases` | Database metadata |
+| `GET` | `/api/v1/food` | `/foods` | Food items |
+| `GET` | `/api/v1/image` | `/images` | Image metadata |
+| `GET` | `/api/v1/lorem` | — | Lorem text blocks |
+| `GET` | `/api/v1/music` | — | Music records |
+| `GET` | `/api/v1/phone` | `/phones` | Phone numbers |
+| `GET` | `/api/v1/science` | — | Science data |
+| `GET` | `/api/v1/vehicle` | `/vehicles` | Vehicle records |
+| `GET` | `/api/v1/word` | `/words` | Word data |
+
+---
+
+## Query Parameters
+
+| Parameter | Type | Default | Max | Description |
+|---|---|---|---|---|
+| `count` | `number` | `10` | `100` | Number of records to return |
+
+Invalid or missing values fall back to `10`.
+
+**Example:**
+
+```http
+GET /api/v1/books?count=5
+GET /api/v1/users?count=25
 ```
 
-## Base URLs
+---
 
-- App home: `http://localhost:3000/`
-- API home page: `http://localhost:3000/api/v1/home`
-- API base: `http://localhost:3000/api/v1`
+## Response Format
 
-## How Seeding Works
-
-When the server starts:
-
-1. MongoDB connection is established.
-2. Each dataset is checked for minimum records.
-3. Missing documents are generated with Faker and inserted automatically.
-
-Current minimum seed targets:
-
-- `users`, `animals`, `locations`, `finance`: 100
-- `dates`, `commerce`, `localizations`, `airlines`, `books`, `colors`, `companies`, `databases`, `foods`, `images`, `lorem`, `music`, `phones`, `science`, `vehicles`, `words`: 80
-
-## Response Pattern
-
-Most dataset endpoints return this structure:
+All dataset endpoints return a consistent JSON structure:
 
 ```json
 {
@@ -138,129 +230,67 @@ Most dataset endpoints return this structure:
 }
 ```
 
-## Query Parameters
-
-Supported on dataset routes:
-
-- `count`
-
-Example:
-
-```http
-GET /api/v1/books?count=5
-```
-
-Rules:
-
-- Default count is `10`
-- Maximum count is `100`
-- Invalid or missing values fall back to `10`
-
-## API Endpoints
-
-### Utility Endpoints
-
-| Method | Route | Description |
-| --- | --- | --- |
-| `GET` | `/api/v1/health` | Returns API health status and uptime |
-| `GET` | `/api/v1/categories` | Returns all dataset categories with routes and aliases |
-| `GET` | `/api/v1/home` | Renders the landing page |
-
-### Dataset Endpoints
-
-| Method | Route | Description |
-| --- | --- | --- |
-| `GET` | `/api/v1/users` | Returns user data |
-| `GET` | `/api/v1/animals` | Returns animal data |
-| `GET` | `/api/v1/locations` | Returns location data |
-| `GET` | `/api/v1/finance` | Returns finance data |
-| `GET` | `/api/v1/date` | Returns date data |
-| `GET` | `/api/v1/dates` | Alias of `/date` |
-| `GET` | `/api/v1/commerce` | Returns commerce data |
-| `GET` | `/api/v1/localization` | Returns localization data |
-| `GET` | `/api/v1/localizations` | Alias of `/localization` |
-| `GET` | `/api/v1/airline` | Returns airline data |
-| `GET` | `/api/v1/airlines` | Alias of `/airline` |
-| `GET` | `/api/v1/book` | Returns book data |
-| `GET` | `/api/v1/books` | Alias of `/book` |
-| `GET` | `/api/v1/color` | Returns color data |
-| `GET` | `/api/v1/colors` | Alias of `/color` |
-| `GET` | `/api/v1/company` | Returns company data |
-| `GET` | `/api/v1/companies` | Alias of `/company` |
-| `GET` | `/api/v1/database` | Returns database data |
-| `GET` | `/api/v1/databases` | Alias of `/database` |
-| `GET` | `/api/v1/food` | Returns food data |
-| `GET` | `/api/v1/foods` | Alias of `/food` |
-| `GET` | `/api/v1/image` | Returns image data |
-| `GET` | `/api/v1/images` | Alias of `/image` |
-| `GET` | `/api/v1/lorem` | Returns lorem text data |
-| `GET` | `/api/v1/music` | Returns music data |
-| `GET` | `/api/v1/phone` | Returns phone data |
-| `GET` | `/api/v1/phones` | Alias of `/phone` |
-| `GET` | `/api/v1/science` | Returns science data |
-| `GET` | `/api/v1/vehicle` | Returns vehicle data |
-| `GET` | `/api/v1/vehicles` | Alias of `/vehicle` |
-| `GET` | `/api/v1/word` | Returns word data |
-| `GET` | `/api/v1/words` | Alias of `/word` |
+---
 
 ## Example Requests
 
-```http
-GET /api/v1/users?count=3
-GET /api/v1/finance?count=5
-GET /api/v1/books?count=2
-GET /api/v1/science?count=10
-GET /api/v1/categories
-```
-
-## Middleware Behavior
-
-- `helmet` adds common security headers
-- `cors` allows cross-origin requests using `ALLOWED_ORIGIN`
-- `morgan` logs requests
-- `express-rate-limit` protects `/api/*`
-- `notFound` handles unmatched routes
-- `errorHandler` returns JSON errors for runtime failures
-
-## Notes About This Repository
-
-- The active API flow is driven from `src/app.js`
-- Some older route and seed helper files still exist as legacy references
-- The main live dataset logic is in `src/services/datasets.js`
-- Views are only used for landing and fallback pages; dataset endpoints return JSON
-
-## Useful Files
-
-- Entry point: [src/app.js](src/app.js)
-- Dataset service: [src/services/datasets.js](src/services/datasets.js)
-- Dataset controller: [src/controllers/datasets.js](src/controllers/datasets.js)
-- DB connector: [src/connectDB/db.js](src/connectDB/db.js)
-- Middleware: [src/middlewares/notFound.js](src/middlewares/notFound.js), [src/middlewares/errorHandler.js](src/middlewares/errorHandler.js)
-
-## Testing the API
-
-You can test the API with:
-
-- Postman
-- Thunder Client
-- `fetch`
-- Axios
-- `curl`
-
-Example:
-
 ```bash
-curl "http://localhost:3000/api/v1/companies?count=3"
+# Get 3 users
+curl "http://localhost:3000/api/v1/users?count=3"
+
+# Get 5 finance records
+curl "http://localhost:3000/api/v1/finance?count=5"
+
+# Get 2 books
+curl "http://localhost:3000/api/v1/books?count=2"
+
+# Get all available categories
+curl "http://localhost:3000/api/v1/categories"
+
+# Check API health
+curl "http://localhost:3000/api/v1/health"
 ```
 
-## Future Improvements
+You can also test with **Postman**, **Thunder Client**, **Axios**, or the browser `fetch` API.
 
-- Add pagination and filtering
-- Add search by fields
-- Add Swagger or OpenAPI docs
-- Add test coverage
-- Remove legacy helper files
+---
+
+## Middleware
+
+| Middleware | Purpose |
+|---|---|
+| `helmet` | Sets common security headers |
+| `cors` | Allows cross-origin requests via `ALLOWED_ORIGIN` |
+| `morgan` | HTTP request logging |
+| `express-rate-limit` | Rate limits all `/api/*` routes |
+| `notFound` | Catches unmatched routes and returns 404 |
+| `errorHandler` | Returns structured JSON for runtime errors |
+
+---
+
+## Key Files
+
+| File | Role |
+|---|---|
+| `src/app.js` | Application entry point |
+| `src/services/datasets.js` | Core dataset logic and auto-seeding |
+| `src/controllers/datasets.js` | Route handlers |
+| `src/connectDB/db.js` | MongoDB connection setup |
+| `src/middlewares/errorHandler.js` | Global error handler |
+| `src/middlewares/notFound.js` | 404 fallback handler |
+
+---
+
+## Roadmap
+
+- [ ] Pagination support (`?page=` and `?limit=`)
+- [ ] Field-level filtering (`?filter[name]=John`)
+- [ ] Swagger / OpenAPI documentation
+- [ ] Unit and integration test coverage
+- [ ] Clean up legacy seed helper files
+
+---
 
 ## License
 
-This project is intended for learning and practice.
+This project is intended for **learning and practice purposes only**.
