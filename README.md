@@ -1,114 +1,266 @@
-# 📡 PracticeAPI
+# PracticeAPI
 
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=nodedotjs&logoColor=white)
-![Express](https://img.shields.io/badge/Express-000000?style=flat&logo=express&logoColor=white)
-![REST API](https://img.shields.io/badge/REST-API-blue?style=flat)
-![Beginner Friendly](https://img.shields.io/badge/Beginner-Friendly-brightgreen?style=flat)
+PracticeAPI is a beginner-friendly Express and MongoDB project that serves fake but realistic dataset APIs for frontend practice, API testing, and learning backend structure.
 
-A free, open REST API built for beginners who want to practice real-world API integration — no signup, no auth headaches, just clean endpoints returning real JSON.
+The app boots with MongoDB, auto-seeds missing records with `@faker-js/faker`, and exposes category-based REST endpoints like users, animals, locations, finance, books, colors, science, vehicles, and more.
 
----
+## Tech Stack
 
-## ✅ What you can do
+- Node.js
+- Express
+- MongoDB with Mongoose
+- Faker (`@faker-js/faker`)
+- EJS
+- Helmet, CORS, Morgan, Express Rate Limit
 
-- Fetch, create, update & delete sample user data using standard HTTP methods
-- Understand request/response structure with clean, readable JSON responses
-- Practice error handling — wrong routes & bad inputs return proper status codes
-- Test with any tool — Postman, Thunder Client, Axios, or plain `fetch()`
+## Features
 
----
+- Category-based REST API under `/api/v1`
+- Auto-seeding for all supported datasets
+- MongoDB-backed data storage
+- Health check endpoint
+- JSON error handling
+- Landing page at `/api/v1/home`
+- Rate limiting on `/api/*`
+- Query-based result limiting with `?count=`
 
-## 🌐 Base URL
+## Project Layout
 
+```text
+PracticeAPI/
+|-- README.md
+|-- .env.example
+|-- categories.txt
+`-- src/
+    |-- app.js
+    |-- package.json
+    |-- connectDB/
+    |   `-- db.js
+    |-- controllers/
+    |   `-- datasets.js
+    |-- middlewares/
+    |   |-- asyncHandler.js
+    |   |-- errorHandler.js
+    |   |-- notFound.js
+    |   `-- validate.js
+    |-- models/
+    |   |-- Users.js
+    |   |-- Animals.js
+    |   |-- Location.js
+    |   |-- Finance.js
+    |   `-- category-specific models
+    |-- services/
+    |   `-- datasets.js
+    |-- utils/
+    |   `-- data generation and legacy seed helpers
+    `-- views/
+        |-- landing.ejs
+        |-- notfound.ejs
+        `-- under-construction.ejs
 ```
-https://localhost:3000/api/v1
+
+## Environment Variables
+
+Create `src/.env` from the example below:
+
+```env
+MONGODB_URI=mongodb://127.0.0.1:27017/practiceAPI
+PORT=3000
+ALLOWED_ORIGIN=*
 ```
 
----
+The project already includes `.env.example` with the same values.
 
-## 📋 Endpoints
+## Installation
 
-| Method   | Endpoint     | Description             |
-| -------- | ------------ | ----------------------- |
-| `GET`    | `/users`     | Fetch all users         |
-| `GET`    | `/users/:id` | Fetch single user by ID |
-| `POST`   | `/users`     | Create a new user       |
-| `PUT`    | `/users/:id` | Update an existing user |
-| `DELETE` | `/users/:id` | Delete a user           |
-
----
-
-## ⚡ Quick Example
-
-**Request:**
-
-```http
-GET /api/v1/users/1
-```
-
-**Response:**
-
-```json
-{
-  "id": 1,
-  "name": "Riya Sharma",
-  "email": "riya@example.com",
-  "role": "user",
-  "createdAt": "2024-01-15T10:30:00Z"
-}
-```
-
----
-
-## 🛠️ Test With
-
-- [Postman](https://www.postman.com/)
-- [Thunder Client](https://www.thunderclient.com/) (VS Code Extension)
-- Axios
-- Native `fetch()`
-- curl
-
----
-
-## 🚀 Run Locally
+From the project root:
 
 ```bash
-# Clone the repo
-git clone https://github.com/git-shubham-side/PracticeAPI
+cd src
+npm install
+```
 
-# Install dependencies
-cd PracticeAPI && npm install
+## Run Locally
 
-# Start the server
+```bash
+cd src
+npm run dev
+```
+
+Or:
+
+```bash
+cd src
 npm start
 ```
 
-Server will start at `http://localhost:3000`
+The server runs on:
 
----
-
-## 📁 Project Structure
-
-```
-PracticeAPI/
-├── src/
-│   ├── routes/
-│   │   └── users/
-│   │       ├── user.controller.js
-│   │       ├── user.routes.js
-│   │       ├── user.schema.js
-│   │       └── user.service.js
-│   ├── server.js
-│   └── package.json
-└── README.md
+```text
+http://localhost:3000
 ```
 
----
+## Base URLs
 
-## 🤝 Contributing
+- App home: `http://localhost:3000/`
+- API home page: `http://localhost:3000/api/v1/home`
+- API base: `http://localhost:3000/api/v1`
 
-Pull requests are welcome! If you're a beginner and want to add more endpoints or improve docs, feel free to open an issue.
+## How Seeding Works
 
----
+When the server starts:
 
-Built for beginners by [@git-shubham-side](https://github.com/git-shubham-side)
+1. MongoDB connection is established.
+2. Each dataset is checked for minimum records.
+3. Missing documents are generated with Faker and inserted automatically.
+
+Current minimum seed targets:
+
+- `users`, `animals`, `locations`, `finance`: 100
+- `dates`, `commerce`, `localizations`, `airlines`, `books`, `colors`, `companies`, `databases`, `foods`, `images`, `lorem`, `music`, `phones`, `science`, `vehicles`, `words`: 80
+
+## Response Pattern
+
+Most dataset endpoints return this structure:
+
+```json
+{
+  "success": true,
+  "dataset": "books",
+  "count": 2,
+  "data": [
+    {
+      "_id": "6820c4d8f893dbdf2fc8658c",
+      "entryId": "9ca4e18a-338e-4ad9-865a-8ff8cefebaf2",
+      "title": "Example Title"
+    }
+  ]
+}
+```
+
+## Query Parameters
+
+Supported on dataset routes:
+
+- `count`
+
+Example:
+
+```http
+GET /api/v1/books?count=5
+```
+
+Rules:
+
+- Default count is `10`
+- Maximum count is `100`
+- Invalid or missing values fall back to `10`
+
+## API Endpoints
+
+### Utility Endpoints
+
+| Method | Route | Description |
+| --- | --- | --- |
+| `GET` | `/api/v1/health` | Returns API health status and uptime |
+| `GET` | `/api/v1/categories` | Returns all dataset categories with routes and aliases |
+| `GET` | `/api/v1/home` | Renders the landing page |
+
+### Dataset Endpoints
+
+| Method | Route | Description |
+| --- | --- | --- |
+| `GET` | `/api/v1/users` | Returns user data |
+| `GET` | `/api/v1/animals` | Returns animal data |
+| `GET` | `/api/v1/locations` | Returns location data |
+| `GET` | `/api/v1/finance` | Returns finance data |
+| `GET` | `/api/v1/date` | Returns date data |
+| `GET` | `/api/v1/dates` | Alias of `/date` |
+| `GET` | `/api/v1/commerce` | Returns commerce data |
+| `GET` | `/api/v1/localization` | Returns localization data |
+| `GET` | `/api/v1/localizations` | Alias of `/localization` |
+| `GET` | `/api/v1/airline` | Returns airline data |
+| `GET` | `/api/v1/airlines` | Alias of `/airline` |
+| `GET` | `/api/v1/book` | Returns book data |
+| `GET` | `/api/v1/books` | Alias of `/book` |
+| `GET` | `/api/v1/color` | Returns color data |
+| `GET` | `/api/v1/colors` | Alias of `/color` |
+| `GET` | `/api/v1/company` | Returns company data |
+| `GET` | `/api/v1/companies` | Alias of `/company` |
+| `GET` | `/api/v1/database` | Returns database data |
+| `GET` | `/api/v1/databases` | Alias of `/database` |
+| `GET` | `/api/v1/food` | Returns food data |
+| `GET` | `/api/v1/foods` | Alias of `/food` |
+| `GET` | `/api/v1/image` | Returns image data |
+| `GET` | `/api/v1/images` | Alias of `/image` |
+| `GET` | `/api/v1/lorem` | Returns lorem text data |
+| `GET` | `/api/v1/music` | Returns music data |
+| `GET` | `/api/v1/phone` | Returns phone data |
+| `GET` | `/api/v1/phones` | Alias of `/phone` |
+| `GET` | `/api/v1/science` | Returns science data |
+| `GET` | `/api/v1/vehicle` | Returns vehicle data |
+| `GET` | `/api/v1/vehicles` | Alias of `/vehicle` |
+| `GET` | `/api/v1/word` | Returns word data |
+| `GET` | `/api/v1/words` | Alias of `/word` |
+
+## Example Requests
+
+```http
+GET /api/v1/users?count=3
+GET /api/v1/finance?count=5
+GET /api/v1/books?count=2
+GET /api/v1/science?count=10
+GET /api/v1/categories
+```
+
+## Middleware Behavior
+
+- `helmet` adds common security headers
+- `cors` allows cross-origin requests using `ALLOWED_ORIGIN`
+- `morgan` logs requests
+- `express-rate-limit` protects `/api/*`
+- `notFound` handles unmatched routes
+- `errorHandler` returns JSON errors for runtime failures
+
+## Notes About This Repository
+
+- The active API flow is driven from `src/app.js`
+- Some older route and seed helper files still exist as legacy references
+- The main live dataset logic is in `src/services/datasets.js`
+- Views are only used for landing and fallback pages; dataset endpoints return JSON
+
+## Useful Files
+
+- Entry point: [src/app.js](src/app.js)
+- Dataset service: [src/services/datasets.js](src/services/datasets.js)
+- Dataset controller: [src/controllers/datasets.js](src/controllers/datasets.js)
+- DB connector: [src/connectDB/db.js](src/connectDB/db.js)
+- Middleware: [src/middlewares/notFound.js](src/middlewares/notFound.js), [src/middlewares/errorHandler.js](src/middlewares/errorHandler.js)
+
+## Testing the API
+
+You can test the API with:
+
+- Postman
+- Thunder Client
+- `fetch`
+- Axios
+- `curl`
+
+Example:
+
+```bash
+curl "http://localhost:3000/api/v1/companies?count=3"
+```
+
+## Future Improvements
+
+- Add pagination and filtering
+- Add search by fields
+- Add Swagger or OpenAPI docs
+- Add test coverage
+- Remove legacy helper files
+
+## License
+
+This project is intended for learning and practice.
