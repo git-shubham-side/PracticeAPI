@@ -155,8 +155,11 @@ async function startServer() {
     });
 
     const PORT = process.env.PORT || 3000;
-    server = app.listen(PORT, () => {
-      console.log(`Server running on: http://localhost:${PORT}`);
+    const HOST = process.env.HOST || "0.0.0.0";
+    const displayHost = HOST === "0.0.0.0" ? "localhost" : HOST;
+
+    server = app.listen(PORT, HOST, () => {
+      console.log(`Server running on: http://${displayHost}:${PORT}`);
     });
   } catch (error) {
     console.error("Failed to start server:", error.message);
