@@ -89,31 +89,38 @@ Hit any endpoint and get back realistic, structured JSON right away.
 
 ## 🔢 Query Parameters
 
-Every dataset endpoint accepts `?count=` to control how many records you get.
+Every dataset endpoint supports pagination and sorting:
 
 ```
-GET /api/v1/users?count=5       → 5 users
-GET /api/v1/books?count=20      → 20 books
-GET /api/v1/finance             → 10 records (default)
+GET /api/v1/users?limit=5&skip=0                    → First 5 users
+GET /api/v1/books?limit=20&skip=20&sort=-createdAt  → Next 20 books, newest first
+GET /api/v1/finance?limit=10                         → 10 records (default)
 ```
 
-| Parameter | Default | Max   |
-| --------- | ------- | ----- |
-| `count`   | `10`    | `100` |
+| Parameter | Type   | Default      | Max   | Description                                                   |
+| --------- | ------ | ------------ | ----- | ------------------------------------------------------------- |
+| `limit`   | Number | `10`         | `100` | Records per page                                              |
+| `skip`    | Number | `0`          | —     | Records to skip (for pagination)                              |
+| `sort`    | String | `-createdAt` | —     | Sort field (e.g., `createdAt` or `-createdAt` for descending) |
 
-Invalid or missing values silently fall back to `10`.
+**Examples:**
+
+- `?limit=5&skip=0` → First page (5 records)
+- `?limit=5&skip=5` → Second page (next 5 records)
+- `?sort=createdAt` → Sort ascending (oldest first)
+- `?sort=-createdAt` → Sort descending (newest first)
 
 ---
 
 ## 📬 Response Structure
 
-Every dataset endpoint returns the same consistent shape:
+Every dataset endpoint returns the same consistent shape with pagination info:
 
 ```json
 {
   "success": true,
+  "status": 200,
   "dataset": "finance",
-  "count": 2,
   "data": [
     {
       "_id": "6820c4d8f893dbdf2fc8658c",
@@ -125,23 +132,32 @@ Every dataset endpoint returns the same consistent shape:
       },
       "upiId": "rahul.sharma@upi",
       "pan": "ABCDE1234F",
-      "creditScore": 742,
-      "loan": {
-        "amount": 250000,
-        "type": "Personal",
-        "emi": 5400
-      }
+      "creditScore": 742
     }
-  ]
+  ],
+  "pagination": {
+    "totalCount": 100,
+    "limit": 10,
+    "skip": 0,
+    "totalPages": 10,
+    "currentPage": 1
+  },
+  "message": "Retrieved 1 records from finance"
 }
 ```
 
-| Field     | Description                   |
-| --------- | ----------------------------- |
-| `success` | `true` if request worked      |
-| `dataset` | Which category this is        |
-| `count`   | Number of records in response |
-| `data`    | Your array of records         |
+| Field                    | Description                            |
+| ------------------------ | -------------------------------------- |
+| `success`                | `true` if request worked               |
+| `status`                 | HTTP status code (200, 400, 404, etc.) |
+| `dataset`                | Which category this is                 |
+| `data`                   | Your array of records                  |
+| `pagination.totalCount`  | Total records in the dataset           |
+| `pagination.limit`       | Records per page                       |
+| `pagination.skip`        | Records skipped                        |
+| `pagination.totalPages`  | Total pages available                  |
+| `pagination.currentPage` | Current page number                    |
+| `message`                | Human-readable status message          |
 
 ---
 
@@ -150,28 +166,42 @@ Every dataset endpoint returns the same consistent shape:
 ### Vanilla JavaScript — `fetch`
 
 ```javascript
-fetch("http://localhost:3000/api/v1/users?count=5")
+fetch("http://localhost:3000/api/v1/users?limit=5&skip=0")
   .then((res) => res.json())
-  .then((json) => console.log(json.data));
+  .then((json) => {
+    console.log(json.data); // 5 users
+    console.log(json.pagination); // { totalCount: 100, limit: 5, skip: 0, ... }
+  });
 ```
 
-### Async / Await
+### Pagination with Sorting
 
 ```javascript
-async function getBooks() {
-  const res = await fetch("http://localhost:3000/api/v1/books?count=10");
+async function getPagedBooks(page = 1, pageSize = 10) {
+  const skip = (page - 1) * pageSize;
+  const url = new URL("http://localhost:3000/api/v1/books");
+  url.searchParams.append("limit", pageSize);
+  url.searchParams.append("skip", skip);
+  url.searchParams.append("sort", "-createdAt"); // newest first
+
+  const res = await fetch(url);
   const json = await res.json();
-  return json.data; // array of book objects
+  return json; // includes both data and pagination info
 }
 ```
 
 ### Axios
 
 ```javascript
-const { data } = await axios.get(
-  "http://localhost:3000/api/v1/finance?count=5",
-);
-console.log(data.data); // finance records
+const response = await axios.get("http://localhost:3000/api/v1/finance", {
+  params: {
+    limit: 10,
+    skip: 0,
+    sort: "-createdAt",
+  },
+});
+console.log(response.data.data); // finance records
+console.log(response.data.pagination); // pagination info
 ```
 
 ### Python
@@ -179,15 +209,19 @@ console.log(data.data); // finance records
 ```python
 import requests
 
-res = requests.get("http://localhost:3000/api/v1/animals?count=5")
-animals = res.json()["data"]
+url = "http://localhost:3000/api/v1/animals"
+params = {"limit": 5, "skip": 0, "sort": "-createdAt"}
+res = requests.get(url, params=params)
+data = res.json()
+animals = data["data"]
+print(f"Page {data['pagination']['currentPage']} of {data['pagination']['totalPages']}")
 print(animals)
 ```
 
 ### cURL
 
 ```bash
-curl "http://localhost:3000/api/v1/companies?count=3"
+curl "http://localhost:3000/api/v1/companies?limit=10&skip=0&sort=-createdAt"
 ```
 
 ---
@@ -234,6 +268,7 @@ The consistent endpoint structure and response format make PracticeAPI a clean f
 | `GET`  | `/api/v1/health`     | Server health status and uptime                    |
 | `GET`  | `/api/v1/categories` | All datasets with routes, aliases, and seed counts |
 | `GET`  | `/api/v1/home`       | Landing page (renders in browser)                  |
+| `GET`  | `/api/v1/docs`       | Full API documentation with examples               |
 
 ---
 
