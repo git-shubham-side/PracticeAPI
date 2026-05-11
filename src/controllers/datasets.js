@@ -6,14 +6,17 @@ const {
 } = require("../services/datasets");
 
 const getDatasetRecords = asyncHandler(async (req, res) => {
-  const datasetKey = resolveDatasetKey(req.params.datasetKey) || req.params.datasetKey;
-  const data = await listDatasetRecords(datasetKey, req.query.count);
+  const datasetKey =
+    resolveDatasetKey(req.params.datasetKey) || req.params.datasetKey;
+  const result = await listDatasetRecords(datasetKey, req.query);
 
   res.json({
     success: true,
+    status: 200,
     dataset: datasetKey,
-    count: data.length,
-    data,
+    data: result.data,
+    pagination: result.pagination,
+    message: `Retrieved ${result.data.length} records from ${datasetKey}`,
   });
 });
 

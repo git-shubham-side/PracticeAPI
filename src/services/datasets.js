@@ -113,7 +113,9 @@ const createCommerceRecord = () => ({
   product: faker.commerce.product(),
   material: faker.commerce.productMaterial(),
   description: faker.commerce.productDescription(),
-  price: Number.parseFloat(faker.commerce.price({ min: 149, max: 9999, dec: 2 })),
+  price: Number.parseFloat(
+    faker.commerce.price({ min: 149, max: 9999, dec: 2 }),
+  ),
   currencyCode: faker.finance.currencyCode(),
   isbn: faker.commerce.isbn(),
   upc: faker.commerce.upc(),
@@ -496,7 +498,10 @@ async function insertSafely(model, documents) {
   try {
     await model.insertMany(documents, { ordered: false });
   } catch (error) {
-    if (error?.name !== "MongoBulkWriteError" && error?.name !== "BulkWriteError") {
+    if (
+      error?.name !== "MongoBulkWriteError" &&
+      error?.name !== "BulkWriteError"
+    ) {
       throw error;
     }
   }
@@ -534,13 +539,48 @@ async function ensureMinimumDocuments(datasetKey) {
   };
 }
 
-async function listDatasetRecords(datasetKey, countValue) {
+async function listDatasetRecords(datasetKey, queryParams = {}) {
   const { config: dataset } = getDatasetOrThrow(datasetKey);
-  const limit = parseCount(countValue);
+
+  // Parse pagination parameters
+  const limit = queryParams.limit ? parseCount(queryParams.limit) : 10;
+  const skip = queryParams.skip
+    ? Math.max(0, Number.parseInt(queryParams.skip, 10))
+    : 0;
+
+  // Parse sort parameter (e.g., "createdAt" or "-createdAt")
+  let sortOrder = { createdAt: -1 };
+  if (queryParams.sort) {
+    const sortField = queryParams.sort.startsWith("-")
+      ? queryParams.sort.slice(1)
+      : queryParams.sort;
+    const sortDirection = queryParams.sort.startsWith("-") ? -1 : 1;
+    sortOrder = { [sortField]: sortDirection };
+  }
 
   await ensureMinimumDocuments(datasetKey);
 
-  return dataset.model.find({}).sort({ createdAt: -1 }).limit(limit).lean();
+  // Get total count for pagination
+  const totalCount = await dataset.model.countDocuments();
+
+  // Fetch paginated records
+  const records = await dataset.model
+    .find({})
+    .sort(sortOrder)
+    .skip(skip)
+    .limit(limit)
+    .lean();
+
+  return {
+    data: records,
+    pagination: {
+      totalCount,
+      limit,
+      skip,
+      totalPages: Math.ceil(totalCount / limit),
+      currentPage: Math.floor(skip / limit) + 1,
+    },
+  };
 }
 
 async function warmDatasets(keys = Object.keys(datasets)) {

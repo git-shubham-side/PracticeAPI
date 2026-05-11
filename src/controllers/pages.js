@@ -10,7 +10,15 @@ const renderLandingPage = (req, res) => {
   });
 };
 
+const renderDocsPage = (req, res) => {
+  res.render("docs", {
+    title: "Documentation | PracticeAPI",
+    subtitle: "Learn how to use PracticeAPI - Complete guide with examples",
+  });
+};
+
 module.exports = {
   redirectToHome,
   renderLandingPage,
+  renderDocsPage,
 };

@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentation — PracticeAPI</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  
+  <!-- Lucide Icons -->
+  <script defer src="https://unpkg.com/lucide@0.511.0/dist/umd/lucide.min.js"></script>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+
+      // Theme Toggle
+      const themeToggle = document.getElementById("theme-toggle");
+      const themeIcon = document.getElementById("theme-icon");
+      
+      const currentTheme = localStorage.getItem("theme");
+      if (currentTheme === "dark") {
+        document.body.classList.add("dark-mode");
+        themeIcon.setAttribute("data-lucide", "sun");
+      } else {
+        themeIcon.setAttribute("data-lucide", "moon");
+      }
+
+      lucide.createIcons();
+
+      themeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+        if (document.body.classList.contains("dark-mode")) {
+          localStorage.setItem("theme", "dark");
+          themeIcon.setAttribute("data-lucide", "sun");
+        } else {
+          localStorage.setItem("theme", "light");
+          themeIcon.setAttribute("data-lucide", "moon");
+        }
+        lucide.createIcons();
+      });
+
+      // Copy code blocks
+      document.querySelectorAll(".copy-code-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const codeBlock = btn.nextElementSibling;
+          const code = codeBlock.innerText;
+          navigator.clipboard.writeText(code).then(() => {
+            btn.innerHTML = '<i data-lucide="check" style="width:14px;height:14px;"></i> Copied!';
+            btn.style.background = "var(--get-bg)";
+            btn.style.color = "var(--get-text)";
+            lucide.createIcons();
+            setTimeout(() => {
+              btn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px;"></i> Copy';
+              btn.style.background = "";
+              btn.style.color = "";
+              lucide.createIcons();
+            }, 2000);
+          });
+        });
+      });
+
+      // Smooth scroll for navigation
+      document.querySelectorAll("a[href^='#']").forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth" });
+          }
+        });
+      });
+    });
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --primary: #6366f1;
+      --primary-light: #e0e7ff;
+      --secondary: #f1f5f9;
+      --border: #e2e8f0;
+      
+      --get-bg: #d1fae5; --get-text: #059669;
+      --post-bg: #e0e7ff; --post-text: #4f46e5;
+      --put-bg: #fef3c7; --put-text: #d97706;
+      --del-bg: #ffe4e6; --del-text: #e11d48;
+
+      --sans: 'Plus Jakarta Sans', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    body.dark-mode {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --primary: #818cf8;
+      --primary-light: rgba(99, 102, 241, 0.2);
+      --secondary: #334155;
+      --border: #334155;
+      
+      --get-bg: rgba(16, 185, 129, 0.2); --get-text: #34d399;
+      --post-bg: rgba(99, 102, 241, 0.2); --post-text: #818cf8;
+      --put-bg: rgba(245, 158, 11, 0.2); --put-text: #fbbf24;
+      --del-bg: rgba(244, 63, 94, 0.2); --del-text: #fb7185;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 70px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--border);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    body.dark-mode nav {
+      background: rgba(15, 23, 42, 0.85);
+    }
+
+    .nav-logo {
+      font-size: 18px; font-weight: 800; letter-spacing: -0.02em;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+    
+    .nav-links { display: flex; gap: 30px; list-style: none; font-weight: 600; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; transition: color .2s; }
+    .nav-links a:hover { color: var(--primary); }
+    
+    .nav-right { display: flex; gap: 10px; align-items: center; }
+    
+    .btn-icon {
+      background: var(--secondary); border: none; border-radius: 12px;
+      width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+      color: var(--text); cursor: pointer; transition: all 0.2s;
+    }
+    .btn-icon:hover { background: var(--primary-light); color: var(--primary); }
+
+    .btn-ghost {
+      padding: 8px 16px; border-radius: 12px; border: 2px solid var(--border);
+      color: var(--text); font-family: var(--sans); font-size: 14px; font-weight: 600;
+      background: var(--card); cursor: pointer; text-decoration: none;
+      transition: all .2s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-ghost:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+
+    /* LAYOUT */
+    .docs-container {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 2rem;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: sticky;
+      top: 90px;
+      height: fit-content;
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      background: var(--card);
+    }
+
+    .sidebar h3 {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar ul li {
+      margin-bottom: 12px;
+    }
+
+    .sidebar ul li a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.2s;
+      display: block;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .sidebar ul li a:hover {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    /* CONTENT */
+    .docs-content {
+      max-width: 800px;
+    }
+
+    .doc-section {
+      margin-bottom: 60px;
+    }
+
+    .doc-section h2 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 3px solid var(--primary);
+      display: inline-block;
+    }
+
+    .doc-section h3 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+
+    .doc-section p {
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .doc-section ul {
+      list-style: none;
+      margin-bottom: 24px;
+    }
+
+    .doc-section ul li {
+      color: var(--muted);
+      margin-bottom: 10px;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .doc-section ul li:before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    /* CODE BLOCK */
+    .code-block {
+      background: #1e293b;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 24px 0;
+      position: relative;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: #0f172a;
+      border-bottom: 1px solid #334155;
+      font-size: 12px;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    .copy-code-btn {
+      background: var(--secondary);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--sans);
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      transition: all 0.2s;
+    }
+
+    .copy-code-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    pre {
+      padding: 20px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-x: auto;
+      color: #f8fafc;
+      margin: 0;
+    }
+
+    .kw { color: #c792ea; }
+    .fn { color: #82aaff; }
+    .str { color: #c3e88d; }
+    .num { color: #f78c6c; }
+    .key { color: #7dd3fc; }
+
+    /* RESPONSE EXAMPLE */
+    .response-example {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+
+    .response-label {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 12px;
+      letter-spacing: 0.1em;
+    }
+
+    /* METHOD BADGES */
+    .method {
+      font-weight: 800;
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .GET { background: var(--get-bg); color: var(--get-text); }
+    .POST { background: var(--post-bg); color: var(--post-text); }
+    .PUT { background: var(--put-bg); color: var(--put-text); }
+    .DELETE { background: var(--del-bg); color: var(--del-text); }
+
+    /* TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    thead {
+      background: var(--secondary);
+    }
+
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 800;
+      color: var(--text);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      padding: 12px 16px;
+      color: var(--muted);
+      font-size: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    td code {
+      background: var(--secondary);
+      padding: 4px 8px;
+      border-radius: 4px;
+      color: var(--primary);
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    /* ALERT BOX */
+    .info-box {
+      background: var(--primary-light);
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 24px 0;
+      color: var(--text);
+    }
+
+    .info-box strong {
+      color: var(--primary);
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+      
+      .docs-container {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 20px 1rem;
+      }
+
+      .sidebar {
+        position: static;
+        border: none;
+        padding: 0;
+      }
+
+      .sidebar ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .doc-section h2 {
+        font-size: 24px;
+      }
+
+      pre {
+        font-size: 11px;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="/api/v1/home">
+    <i data-lucide="rocket"></i> PracticeAPI
+  </a>
+  <ul class="nav-links">
+    <li><a href="/api/v1/home">Home</a></li>
+    <li><a href="/api/v1/docs">Documentation</a></li>
+  </ul>
+  <div class="nav-right">
+    <button id="theme-toggle" class="btn-icon" aria-label="Toggle Dark Mode">
+      <i data-lucide="moon" id="theme-icon"></i>
+    </button>
+    <a class="btn-ghost" href="https://github.com/git-shubham-side/PracticeAPI" target="_blank">
+      <i data-lucide="github"></i> <span>GitHub</span>
+    </a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="docs-container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h3><i data-lucide="book-open" style="width: 14px; margin-bottom: 4px;"></i> Table of Contents</h3>
+    <ul>
+      <li><a href="#intro">Introduction</a></li>
+      <li><a href="#baseurl">Base URL</a></li>
+      <li><a href="#auth">Authentication</a></li>
+      <li><a href="#making-requests">Making Requests</a></li>
+      <li><a href="#responses">Responses</a></li>
+      <li><a href="#endpoints">All Endpoints</a></li>
+      <li><a href="#examples">Code Examples</a></li>
+      <li><a href="#errors">Error Handling</a></li>
+      <li><a href="#ratelimit">Rate Limiting</a></li>
+    </ul>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="docs-content">
+
+    <!-- INTRODUCTION -->
+    <section class="doc-section" id="intro">
+      <h2><i data-lucide="zap" style="width: 28px; margin-right: 8px; vertical-align: -2px;"></i> Getting Started</h2>
+      <p>
+        Welcome to PracticeAPI! This is a free REST API designed for developers to practice building applications, test API calls, and learn how real-world APIs work. No authentication required — just start making requests.
+      </p>
+      <p>
+        PracticeAPI provides realistic, structured JSON data across 20+ categories including users, locations, finance data, products, and much more.
+      </p>
+    </section>
+
+    <!-- BASE URL -->
+    <section class="doc-section" id="baseurl">
+      <h2><i data-lucide="link" style="width: 28px; margin-right: 8px; vertical-align: -2px;"></i> Base URL</h2>
+      <p>All API requests use the following base URL:</p>
+      <div class="code-block">
+        <div class="code-header">Base URL</div>
+        <button class="copy-code-btn"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
+        <pre>https://practiceapi.up.railway.app/api/v1</pre>
+      </div>
+      <p>Append the desired endpoint to this base URL to make requests.</p>
+    </section>
+
+    <!-- AUTHENTICATION -->
+    <section class="doc-section" id="auth">
+      <h2><i data-lucide="lock" style="width: 28px; margin-right: 8px; vertical-align: -2px;"></i> Authentication</h2>
+      <p>
+        <strong>No authentication required!</strong> PracticeAPI is completely open and free to use. You don't need to provide API keys, tokens, or credentials. Just make requests directly to the endpoints.
+      </p>
+      <div class="info-box">
+        <strong>💡 Tip:</strong> This is perfect for learning and testing. In production APIs, you'll typically need authentication headers like <code>Authorization: Bearer YOUR_TOKEN</code>.
+      </div>
+    </section>
+
+    <!-- MAKING REQUESTS -->
+    <section class="doc-section" id="making-requests">
+      <h2><i data-lucide="send" style="width: 28px; margin-right: 8px; vertical-align: -2px;"></i> Making Requests</h2>
+      
+      <h3>HTTP Methods</h3>
+      <p>PracticeAPI supports all standard HTTP methods:</p>
+      <ul>
+        <li><span class="method GET">GET</span> - Retrieve data</li>
+        <li><span class="method POST">POST</span> - Create new data</li>
+        <li><span class="method PUT">PUT</span> - Update existing data</li>
+        <li><span class="method DELETE">DELETE</span> - Delete data</li>
+      </ul>
+
+      <h3>Request Headers</h3>
+      <p>When sending data, include the proper content type:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Header</th>
+            <th>Value</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>Content-Type</code></td>
+            <td><code>application/json</code></td>
+            <td>For JSON data in POST/PUT requests</td>
+          </tr>
+          <tr>
+            <td><code>Accept</code></td>
+            <td><code>application/json</code></td>
+            <td>Request JSON response format</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Query Parameters</h3>
+      <p>Most endpoints support query parameters for filtering and pagination:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>limit</code></td>
+            <td>Number</td>
+            <td>Limit number of results returned (default: 10, max: 100)</td>
+          </tr>
+          <tr>
+            <td><code>skip</code></td>
+            <td>Number</td>
+            <td>Skip first N results for pagination</td>
+          </tr>
+          <tr>
+            <td><code>sort</code></td>
+            <td>String</td>
+            <td>Sort results (ascending: field, descending: -field)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box">
+        <strong>📝 Example:</strong> <code>GET /api/v1/person?limit=5&skip=0&sort=-createdAt</code>
+      </div>
+    </section>
+
+    <!-- RESPONSES -->
+    <section class="doc-section" id="responses">
+      <h2><i data-lucide="check-circle" style="width: 28px; margin-right: 8px; vertical-align: -2px;"></i> Responses</h2>
+      
+      <h3>Success Response (200 OK)</h3>
+      <p>Successful requests return a 200 status code with data:</p>
+      <div class="response-example">
+        <div class="response-label">Response Format</div>
+        <div class="code-block">
+          <div class="code-header">JSON</div>
+          <button class="copy-code-btn"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
+          <pre>{
+  <span class="str">"success"</span>: <span class="kw">true</span>,
+  <span class="str">"status"</span>: <span class="num">200</span>,
+  <span class="str">"data"</span>: {
+    <span class="str">"id"</span>: <span class="str">"abc123"</span>,
+    <span class="str">"name"</span>: <span class="str">"John Doe"</span>,
+    <span class="str">"email"</span>: <span class="str">"john@example.com"</span>
+  },
+  <span class="str">"message"</span>: <span class="str">"Data retrieved successfully"</span>
+}</pre>
+        </div>
+      </div>
+
+      <h3>Paginated Response</h3>
+      <p>Endpoints that return multiple items include pagination info:</p>
+      <div class="response-example">
+        <div class="response-label">Pagination Format</div>
+        <div class="code-block">
+          <div class="code-header">JSON</div>
+          <button class="copy-code-btn"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
+          <pre>{
+  <span class="str">"success"</span>: <span class="kw">true</span>,
+  <span class="str">"status"</span>: <span class="num">200</span>,
+  <span class="str">"dataset"</span>: <span class="str">"person"</span>,
+  <span class="str">"data"</span>: [
+    { <span class="str">"id"</span>: <span class="str">"1"</span>, <span class="str">"name"</span>: <span class="str">"John Doe"</span>, <span class="str">"email"</span>: <span class="str">"john@example.com"</span> },
+    { <span class="str">"id"</span>: <span class="str">"2"</span>, <span class="str">"name"</span>: <span class="str">"Jane Smith"</span>, <span class="str">"email"</span>: <span class="str">"jane@example.com"</span> }
+  ],
+  <span class="str">"pagination"</span>: {
+    <span class="str">"totalCount"</span>: <span class="num">100</span>,
+    <span class="str">"limit"</span>: <span class="num">10</span>,
+    <span class="str">"skip"</span>: <span class="num">0</span>,
+    <span class="str">"totalPages"</span>: <span class="num">10</span>,
+    <span class="str">"currentPage"</span>: <span class="num">1</span>
+  },
+  <span class="str">"message"</span>: <span class="str">"Retrieved 2 records from person"</span>
+}</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ALL ENDPOINTS -->
+    <section class="doc-section" id="endpoints">
+      <h2><i data-lucide="layers" style="width: 28px; margin-right: 8px; vertical-align: -2px;"></i> All Endpoints</h2>
+      <p>PracticeAPI provides 20+ data categories. Here are the main endpoints:</p>
+
+      <h3>Categories & Endpoints</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="method GET">GET</span></td>
+            <td><code>/person</code></td>
+            <td>Get person data</td>
+          </tr>
+          <tr>
+            <td><span class="method GET">GET</span></td>
+            <td><code>/location</code></td>
+            <td>Get location data</td>
+          </tr>
+          <tr>
+            <td><span class="method GET">GET</span></td>
+            <td><code>/date</code></td>
+            <td>Get date entries</td>
+          </tr>
+          <tr>
+            <td><span class="method GET">GET</span></td>
+            <td><code>/finance</code></td>
+            <td>Get finance data</td>
+          </tr>
+          <tr>
+            <td><span class="method GET">GET</span></td>
+            <td><code>/commerce</code></td>
+            <td>Get commerce/product data</td>
+          </tr>
+          <tr>
+            <td><span class="method GET">GET</span></td>
+            <td><code>/animal</code></td>
+            <td>Get animal data</td>
+          </tr>
+          <tr>
+            <td><span class="method GET">GET</span></td>
+            <td><code>/book</code></td>
+            <td>Get book data</td>
+          </tr>
+          <tr>
+            <td><span class="method GET">GET</span></td>
+            <td><code>/airline</code></td>
+            <td>Get airline data</td>
+          </tr>
+          <tr>
+            <td><span class="method GET">GET</span></td>
+            <td><code>/music</code></td>
+            <td>Get music data</td>
+          </tr>
+          <tr>
+            <td><span class="method GET">GET</span></td>
+            <td><code>/company</code></td>
+            <td>Get company data</td>
+          </tr>
+          <tr>
+            <td><span class="method GET">GET</span></td>
+            <td><code>/database</code></td>
+            <td>Get database related data</td>
+          </tr>
+          <tr>
+            <td><span class="method GET">GET</span></td>
+            <td><code>/images</code></td>
+            <td>Get image data</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- CODE EXAMPLES -->
+    <section class="doc-section" id="examples">
+      <h2><i data-lucide="code" style="width: 28px; margin-right: 8px; vertical-align: -2px;"></i> Code Examples</h2>
+
+      <h3>JavaScript - Fetch API</h3>
+      <p>Simple GET request to fetch person data:</p>
+      <div class="code-block">
+        <div class="code-header">JavaScript</div>
+        <button class="copy-code-btn"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
+        <pre><span class="kw">fetch</span>(<span class="str">'https://practiceapi.up.railway.app/api/v1/person'</span>)
+  .<span class="fn">then</span>(<span class="fn">response</span> => <span class="fn">response</span>.<span class="fn">json</span>())
+  .<span class="fn">then</span>(<span class="fn">data</span> => <span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">data</span>))
+  .<span class="fn">catch</span>(<span class="fn">error</span> => <span class="fn">console</span>.<span class="fn">error</span>(<span class="str">'Error:'</span>, <span class="fn">error</span>));</pre>
+      </div>
+
+      <h3>JavaScript - Async/Await</h3>
+      <p>Modern approach using async/await:</p>
+      <div class="code-block">
+        <div class="code-header">JavaScript</div>
+        <button class="copy-code-btn"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
+        <pre><span class="kw">async function</span> <span class="fn">getPersonData</span>() {
+  <span class="kw">try</span> {
+    <span class="key">const</span> <span class="fn">response</span> = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://practiceapi.up.railway.app/api/v1/person'</span>);
+    <span class="key">const</span> <span class="fn">data</span> = <span class="kw">await</span> <span class="fn">response</span>.<span class="fn">json</span>();
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">data</span>);
+  } <span class="kw">catch</span> (<span class="fn">error</span>) {
+    <span class="fn">console</span>.<span class="fn">error</span>(<span class="str">'Error:'</span>, <span class="fn">error</span>);
+  }
+}
+
+<span class="fn">getPersonData</span>();</pre>
+      </div>
+
+      <h3>JavaScript - Axios</h3>
+      <p>Using the popular Axios library:</p>
+      <div class="code-block">
+        <div class="code-header">JavaScript</div>
+        <button class="copy-code-btn"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
+        <pre><span class="kw">axios</span>.<span class="fn">get</span>(<span class="str">'https://practiceapi.up.railway.app/api/v1/person'</span>, {
+  <span class="fn">params</span>: {
+    <span class="str">limit</span>: <span class="num">5</span>,
+    <span class="str">skip</span>: <span class="num">0</span>
+  }
+})
+.<span class="fn">then</span>(<span class="fn">response</span> => <span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">response</span>.<span class="fn">data</span>))
+.<span class="fn">catch</span>(<span class="fn">error</span> => <span class="fn">console</span>.<span class="fn">error</span>(<span class="fn">error</span>));</pre>
+      </div>
+
+      <h3>Python - Requests</h3>
+      <p>Python example using the requests library:</p>
+      <div class="code-block">
+        <div class="code-header">Python</div>
+        <button class="copy-code-btn"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
+        <pre><span class="kw">import</span> requests
+
+url = <span class="str">'https://practiceapi.up.railway.app/api/v1/person'</span>
+params = {
+    <span class="str">'limit'</span>: <span class="num">5</span>,
+    <span class="str">'skip'</span>: <span class="num">0</span>
+}
+
+response = requests.<span class="fn">get</span>(url, params=params)
+data = response.<span class="fn">json</span>()
+<span class="fn">print</span>(data)</pre>
+      </div>
+
+      <h3>cURL</h3>
+      <p>Command line example using cURL:</p>
+      <div class="code-block">
+        <div class="code-header">Bash</div>
+        <button class="copy-code-btn"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
+        <pre>curl -X GET <span class="str">'https://practiceapi.up.railway.app/api/v1/person?limit=5&skip=0'</span> \
+  -H <span class="str">'Accept: application/json'</span></pre>
+      </div>
+
+      <h3>POST Request - Create Data</h3>
+      <p>Creating new data with POST request:</p>
+      <div class="code-block">
+        <div class="code-header">JavaScript</div>
+        <button class="copy-code-btn"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
+        <pre><span class="kw">async function</span> <span class="fn">createPerson</span>() {
+  <span class="key">const</span> <span class="fn">data</span> = {
+    <span class="str">name</span>: <span class="str">'John Doe'</span>,
+    <span class="str">email</span>: <span class="str">'john@example.com'</span>,
+    <span class="str">age</span>: <span class="num">25</span>
+  };
+
+  <span class="key">const</span> <span class="fn">response</span> = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://practiceapi.up.railway.app/api/v1/person'</span>, {
+    <span class="str">method</span>: <span class="str">'POST'</span>,
+    <span class="str">headers</span>: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+    <span class="str">body</span>: <span class="fn">JSON</span>.<span class="fn">stringify</span>(<span class="fn">data</span>)
+  });
+
+  <span class="key">const</span> <span class="fn">result</span> = <span class="kw">await</span> <span class="fn">response</span>.<span class="fn">json</span>();
+  <span class="fn">console</span>.<span class="fn">log</span>(<span class="fn">result</span>);
+}</pre>
+      </div>
+
+      <h3>Pagination with Sorting</h3>
+      <p>Fetch paginated data with custom sorting:</p>
+      <div class="code-block">
+        <div class="code-header">JavaScript</div>
+        <button class="copy-code-btn"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
+        <pre><span class="kw">async function</span> <span class="fn">fetchPaginatedData</span>() {
+  <span class="key">const</span> page = <span class="num">1</span>;
+  <span class="key">const</span> pageSize = <span class="num">10</span>;
+  <span class="key">const</span> skip = (page - <span class="num">1</span>) * pageSize;
+
+  <span class="key">const</span> url = <span class="kw">new</span> <span class="fn">URL</span>(<span class="str">'https://practiceapi.up.railway.app/api/v1/person'</span>);
+  url.<span class="fn">searchParams</span>.<span class="fn">append</span>(<span class="str">'limit'</span>, pageSize);
+  url.<span class="fn">searchParams</span>.<span class="fn">append</span>(<span class="str">'skip'</span>, skip);
+  url.<span class="fn">searchParams</span>.<span class="fn">append</span>(<span class="str">'sort'</span>, <span class="str">'-createdAt'</span>);
+
+  <span class="kw">try</span> {
+    <span class="key">const</span> response = <span class="kw">await</span> <span class="fn">fetch</span>(url);
+    <span class="key">const</span> result = <span class="kw">await</span> response.<span class="fn">json</span>();
+
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'Data:'</span>, result.data);
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'Current Page:'</span>, result.pagination.currentPage);
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'Total Pages:'</span>, result.pagination.totalPages);
+  } <span class="kw">catch</span> (error) {
+    <span class="fn">console</span>.<span class="fn">error</span>(<span class="str">'Error:'</span>, error);
+  }
+}</pre>
+      </div>
+    </section>
+
+    <!-- ERROR HANDLING -->
+    <section class="doc-section" id="errors">
+      <h2><i data-lucide="alert-circle" style="width: 28px; margin-right: 8px; vertical-align: -2px;"></i> Error Handling</h2>
+      
+      <h3>HTTP Status Codes</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Meaning</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>200</code></td>
+            <td>OK - Request successful</td>
+            <td>Data retrieved successfully</td>
+          </tr>
+          <tr>
+            <td><code>201</code></td>
+            <td>Created - Resource created</td>
+            <td>New data created</td>
+          </tr>
+          <tr>
+            <td><code>400</code></td>
+            <td>Bad Request - Invalid parameters</td>
+            <td>Invalid query parameters</td>
+          </tr>
+          <tr>
+            <td><code>404</code></td>
+            <td>Not Found - Resource doesn't exist</td>
+            <td>Invalid endpoint</td>
+          </tr>
+          <tr>
+            <td><code>500</code></td>
+            <td>Server Error - Internal error</td>
+            <td>Unexpected server error</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Error Response Format</h3>
+      <p>When an error occurs, you'll receive a response like this:</p>
+      <div class="response-example">
+        <div class="response-label">Error Response</div>
+        <div class="code-block">
+          <div class="code-header">JSON</div>
+          <button class="copy-code-btn"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
+          <pre>{
+  <span class="str">"success"</span>: <span class="kw">false</span>,
+  <span class="str">"status"</span>: <span class="num">400</span>,
+  <span class="str">"message"</span>: <span class="str">"Invalid request parameters"</span>,
+  <span class="str">"error"</span>: {
+    <span class="str">"code"</span>: <span class="str">"INVALID_PARAM"</span>,
+    <span class="str">"details"</span>: <span class="str">"limit must be a number"</span>
+  }
+}</pre>
+        </div>
+      </div>
+
+      <h3>Handling Errors in Code</h3>
+      <div class="code-block">
+        <div class="code-header">JavaScript</div>
+        <button class="copy-code-btn"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
+        <pre><span class="kw">async function</span> <span class="fn">fetchData</span>() {
+  <span class="kw">try</span> {
+    <span class="key">const</span> <span class="fn">response</span> = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="str">'https://practiceapi.up.railway.app/api/v1/person'</span>);
+    
+    <span class="kw">if</span> (!<span class="fn">response</span>.<span class="fn">ok</span>) {
+      <span class="key">const</span> <span class="fn">error</span> = <span class="kw">await</span> <span class="fn">response</span>.<span class="fn">json</span>();
+      <span class="fn">console</span>.<span class="fn">error</span>(<span class="str">'API Error:'</span>, <span class="fn">error</span>.<span class="fn">message</span>);
+      <span class="kw">return</span>;
+    }
+    
+    <span class="key">const</span> <span class="fn">data</span> = <span class="kw">await</span> <span class="fn">response</span>.<span class="fn">json</span>();
+    <span class="fn">console</span>.<span class="fn">log</span>(<span class="str">'Success:'</span>, <span class="fn">data</span>);
+  } <span class="kw">catch</span> (<span class="fn">error</span>) {
+    <span class="fn">console</span>.<span class="fn">error</span>(<span class="str">'Network Error:'</span>, <span class="fn">error</span>);
+  }
+}</pre>
+      </div>
+    </section>
+
+    <!-- RATE LIMITING -->
+    <section class="doc-section" id="ratelimit">
+      <h2><i data-lucide="zap" style="width: 28px; margin-right: 8px; vertical-align: -2px;"></i> Rate Limiting</h2>
+      
+      <h3>Limits</h3>
+      <p>PracticeAPI implements rate limiting to ensure fair usage:</p>
+      <ul>
+        <li><strong>100 requests per 15 minutes</strong> per IP address</li>
+        <li>Applies to all API endpoints</li>
+        <li>Resets automatically after the 15-minute window</li>
+      </ul>
+
+      <h3>Rate Limit Headers</h3>
+      <p>Each response includes rate limit information in the headers:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Header</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>X-RateLimit-Limit</code></td>
+            <td>Total requests allowed in window (100)</td>
+          </tr>
+          <tr>
+            <td><code>X-RateLimit-Remaining</code></td>
+            <td>Requests remaining in current window</td>
+          </tr>
+          <tr>
+            <td><code>X-RateLimit-Reset</code></td>
+            <td>Unix timestamp when limit resets</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Exceeded Rate Limit</h3>
+      <p>When you exceed the rate limit, you'll receive a 429 response:</p>
+      <div class="response-example">
+        <div class="response-label">Rate Limit Exceeded</div>
+        <div class="code-block">
+          <div class="code-header">JSON</div>
+          <button class="copy-code-btn"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
+          <pre>{
+  <span class="str">"error"</span>: <span class="str">"Too many requests, please try again later."</span>
+}</pre>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <strong>💡 Tip:</strong> Check the <code>X-RateLimit-Remaining</code> header to monitor your usage and avoid hitting the limit.
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+</body>
+</html>
