@@ -20,7 +20,16 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        "script-src": ["'self'", "https://unpkg.com"],
+        "default-src": ["'self'"],
+        "script-src": ["'self'", "https://unpkg.com", "'unsafe-inline'"],
+        "style-src": [
+          "'self'",
+          "'unsafe-inline'",
+          "https://fonts.googleapis.com",
+        ],
+        "font-src": ["'self'", "https://fonts.gstatic.com"],
+        "img-src": ["'self'", "data:", "https:"],
+        "connect-src": ["'self'"],
       },
     },
   }),
@@ -35,7 +44,6 @@ const limiter = rateLimit({
   max: 100,
   message: { error: "Too many requests, please try again later." },
 });
-
 
 app.use("/api", limiter);
 app.use(routes);
