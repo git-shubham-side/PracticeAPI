@@ -2,14 +2,14 @@
         CATEGORY DIRECTORY
 ═══════════════════════════════════════
 
-➤ 👤 Person ++
-➤ 📍 Location ++
+➤ 👤 Person 
+➤ 📍 Location 
 ➤ 📅 Date
-➤ 💰 Finance ++
+➤ 💰 Finance 
 ➤ 🛒 Commerce
 ➤ 🌐 Localization
 ➤ ✈️ Airline
-➤ 🐾 Animal ++
+➤ 🐾 Animal 
 ➤ 📚 Book
 ➤ 🎨 Color
 ➤ 🏢 Company
@@ -23,6 +23,4 @@
 ➤ 🚗 Vehicle
 ➤ 🔤 Words
 
-═══════════════════════════════════════
-      ★ Modern Text File Layout ★
 ═══════════════════════════════════════
