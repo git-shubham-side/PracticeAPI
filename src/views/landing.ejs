@@ -10,6 +10,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   
+<<<<<<< HEAD
+=======
+  <!-- Icon Library (Lucide) -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+>>>>>>> 58e61dc32bce496ab3653a4a5a246fdb8f10d9f6
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -324,8 +330,13 @@
   </div>
   <div class="base-url-pill">
     <span>Base URL</span>
+<<<<<<< HEAD
     <code id="base-url-value">/api/v1</code>
     <button class="copy-btn" id="copy-base-btn" type="button" data-copy-text="/api/v1">
+=======
+    <code>https://practiceapi-fs0h.onrender.com/api/v1/home</code>
+    <button class="copy-btn" onclick="copyBase()">
+>>>>>>> 58e61dc32bce496ab3653a4a5a246fdb8f10d9f6
       <i data-lucide="copy" style="width: 14px; height: 14px;"></i> Copy
     </button>
   </div>
@@ -534,8 +545,56 @@
   </div>
 </footer>
 
+<<<<<<< HEAD
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="/js/lucide-ui.js"></script>
+=======
+<script>
+  // Initialize Lucide Icons
+  lucide.createIcons();
+
+  // Copy Base URL Logic
+  function copyBase() {
+    navigator.clipboard.writeText('https://practiceapi-fs0h.onrender.com/api/v1/home');
+    const btn = document.querySelector('.copy-btn');
+    btn.innerHTML = '<i data-lucide="check" style="width:14px;height:14px;"></i> Copied!';
+    btn.style.background = 'var(--get-bg)';
+    btn.style.color = 'var(--get-text)';
+    btn.style.borderColor = 'var(--get-text)';
+    lucide.createIcons(); // Re-render the check icon
+    
+    setTimeout(() => {
+      btn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px;"></i> Copy';
+      btn.style = '';
+      lucide.createIcons(); // Re-render the copy icon
+    }, 2000);
+  }
+
+  // Dark Mode Toggle Logic
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  
+  // Check local storage for theme preference
+  const currentTheme = localStorage.getItem('theme');
+  if (currentTheme === 'dark') {
+    document.body.classList.add('dark-mode');
+    themeIcon.setAttribute('data-lucide', 'sun');
+  }
+
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    
+    if (document.body.classList.contains('dark-mode')) {
+      themeIcon.setAttribute('data-lucide', 'sun');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      themeIcon.setAttribute('data-lucide', 'moon');
+      localStorage.setItem('theme', 'light');
+    }
+    lucide.createIcons(); // Re-render the moon/sun icon
+  });
+</script>
+>>>>>>> 58e61dc32bce496ab3653a4a5a246fdb8f10d9f6
 
 </body>
 </html>
