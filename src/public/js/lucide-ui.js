@@ -5,18 +5,17 @@
     }
   };
 
-  const setThemeIcon = (themeIcon, theme) => {
-    if (!themeIcon) {
+  const setThemeIcon = (themeToggle, theme) => {
+    if (!themeToggle) {
       return;
     }
 
-    themeIcon.setAttribute("data-lucide", theme === "dark" ? "sun" : "moon");
+    themeToggle.innerHTML = `<i data-lucide="${theme === "dark" ? "sun" : "moon"}" id="theme-icon"></i>`;
     renderIcons();
   };
 
   document.addEventListener("DOMContentLoaded", () => {
     const themeToggle = document.getElementById("theme-toggle");
-    const themeIcon = document.getElementById("theme-icon");
     const copyBaseBtn = document.getElementById("copy-base-btn");
     const baseUrlValue = document.getElementById("base-url-value");
     const baseUrl = `${window.location.origin}/api/v1`;
@@ -34,9 +33,9 @@
     const currentTheme = window.localStorage.getItem("theme");
     if (currentTheme === "dark") {
       document.body.classList.add("dark-mode");
-      setThemeIcon(themeIcon, "dark");
+      setThemeIcon(themeToggle, "dark");
     } else {
-      setThemeIcon(themeIcon, "light");
+      setThemeIcon(themeToggle, "light");
     }
 
     if (copyBaseBtn) {
@@ -73,7 +72,7 @@
         const nextTheme = isDarkMode ? "dark" : "light";
 
         window.localStorage.setItem("theme", nextTheme);
-        setThemeIcon(themeIcon, nextTheme);
+        setThemeIcon(themeToggle, nextTheme);
       });
     }
   });
