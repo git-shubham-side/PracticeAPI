@@ -6,17 +6,13 @@
   <title>PracticeAPI — Free REST API for Beginners</title>
   
   <!-- Fonts -->
-   <link rel="icon" href="/pictures/api-icon.avif">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   
-<<<<<<< HEAD
-=======
   <!-- Icon Library (Lucide) -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
->>>>>>> 58e61dc32bce496ab3653a4a5a246fdb8f10d9f6
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -271,11 +267,11 @@
     footer .fl { font-size: 14px; font-weight: 600; color: var(--muted); }
     footer a { color: var(--primary); text-decoration: none; }
     footer a:hover { text-decoration: underline; }
-/* ── MOBILE RESPONSIVENESS ── */
+
+    /* ── MOBILE RESPONSIVENESS ── */
     @media (max-width: 768px) {
       nav { padding: 0 1.5rem; }
-      .nav-links { display: none; /* Hidden on mobile to save space */ }
-      /* .btn-ghost span wali line yaha se hata di gayi hai */
+      .nav-links { display: none; }
       
       .hero { padding: 60px 1rem 40px; }
       .base-url-pill { flex-direction: column; text-align: center; }
@@ -330,15 +326,17 @@
     </a>
   </div>
   <div class="base-url-pill">
-    <span>Base URL</span>
-<<<<<<< HEAD
-    <code id="base-url-value">/api/v1</code>
-    <button class="copy-btn" id="copy-base-btn" type="button" data-copy-text="/api/v1">
-=======
+    <span>Base URL Render</span>
     <code>https://practiceapi-fs0h.onrender.com/api/v1/home</code>
     <button class="copy-btn" onclick="copyBase()">
->>>>>>> 58e61dc32bce496ab3653a4a5a246fdb8f10d9f6
-      <i data-lucide="copy" style="width: 14px; height: 14px;"></i> Copy
+      <i data-lucide="copy" style="width:14px;height:14px;"></i> Copy
+    </button>
+  </div>
+    <div class="base-url-pill">
+    <span>Base URL Railway</span>
+    <code>practiceapi-production-2136.up.railway.app</code>
+    <button class="copy-btn" onclick="copyBase()">
+      <i data-lucide="copy" style="width:14px;height:14px;"></i> Copy
     </button>
   </div>
 </section>
@@ -353,40 +351,86 @@
   </p>
 
   <div class="categories-grid">
-    <!-- EJS Template Loop for Categories (Replaced Emojis with Lucide Icon names) -->
-    <% const cats = [
-      { icon: 'user', name: 'Person', slug: 'person' },
-      { icon: 'map-pin', name: 'Location', slug: 'location' },
-      { icon: 'calendar', name: 'Date', slug: 'date' },
-      { icon: 'circle-dollar-sign', name: 'Finance', slug: 'finance' },
-      { icon: 'shopping-cart', name: 'Commerce', slug: 'commerce' },
-      { icon: 'globe', name: 'Localization', slug: 'localization' },
-      { icon: 'plane', name: 'Airline', slug: 'airline' },
-      { icon: 'paw-print', name: 'Animal', slug: 'animal' },
-      { icon: 'book', name: 'Book', slug: 'book' },
-      { icon: 'palette', name: 'Color', slug: 'color' },
-      { icon: 'building', name: 'Company', slug: 'company' },
-      { icon: 'database', name: 'Database', slug: 'database' },
-      { icon: 'pizza', name: 'Food', slug: 'food' },
-      { icon: 'image', name: 'Images', slug: 'images' },
-      { icon: 'file-text', name: 'Lorem', slug: 'lorem' },
-      { icon: 'music', name: 'Music', slug: 'music' },
-      { icon: 'smartphone', name: 'Phones', slug: 'phones' },
-      { icon: 'microscope', name: 'Science', slug: 'science' },
-      { icon: 'car', name: 'Vehicle', slug: 'vehicle' },
-      { icon: 'message-square', name: 'Words', slug: 'words' }
-    ]; %>
-    <% cats.forEach(cat => { %>
     <div class="cat-card">
-      <div class="cat-icon">
-        <i data-lucide="<%= cat.icon %>"></i>
-      </div>
-      <div>
-        <div class="cat-name"><%= cat.name %></div>
-        <div class="cat-route">/api/v1/<span><%= cat.slug %></span></div>
-      </div>
+      <div class="cat-icon"><i data-lucide="user"></i></div>
+      <div><div class="cat-name">Person</div><div class="cat-route">/api/v1/<span>person</span></div></div>
     </div>
-    <% }); %>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="map-pin"></i></div>
+      <div><div class="cat-name">Location</div><div class="cat-route">/api/v1/<span>location</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="calendar"></i></div>
+      <div><div class="cat-name">Date</div><div class="cat-route">/api/v1/<span>date</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="circle-dollar-sign"></i></div>
+      <div><div class="cat-name">Finance</div><div class="cat-route">/api/v1/<span>finance</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="shopping-cart"></i></div>
+      <div><div class="cat-name">Commerce</div><div class="cat-route">/api/v1/<span>commerce</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="globe"></i></div>
+      <div><div class="cat-name">Localization</div><div class="cat-route">/api/v1/<span>localization</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="plane"></i></div>
+      <div><div class="cat-name">Airline</div><div class="cat-route">/api/v1/<span>airline</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="paw-print"></i></div>
+      <div><div class="cat-name">Animal</div><div class="cat-route">/api/v1/<span>animal</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="book"></i></div>
+      <div><div class="cat-name">Book</div><div class="cat-route">/api/v1/<span>book</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="palette"></i></div>
+      <div><div class="cat-name">Color</div><div class="cat-route">/api/v1/<span>color</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="building"></i></div>
+      <div><div class="cat-name">Company</div><div class="cat-route">/api/v1/<span>company</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="database"></i></div>
+      <div><div class="cat-name">Database</div><div class="cat-route">/api/v1/<span>database</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="pizza"></i></div>
+      <div><div class="cat-name">Food</div><div class="cat-route">/api/v1/<span>food</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="image"></i></div>
+      <div><div class="cat-name">Images</div><div class="cat-route">/api/v1/<span>images</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="file-text"></i></div>
+      <div><div class="cat-name">Lorem</div><div class="cat-route">/api/v1/<span>lorem</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="music"></i></div>
+      <div><div class="cat-name">Music</div><div class="cat-route">/api/v1/<span>music</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="smartphone"></i></div>
+      <div><div class="cat-name">Phones</div><div class="cat-route">/api/v1/<span>phones</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="microscope"></i></div>
+      <div><div class="cat-name">Science</div><div class="cat-route">/api/v1/<span>science</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="car"></i></div>
+      <div><div class="cat-name">Vehicle</div><div class="cat-route">/api/v1/<span>vehicle</span></div></div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon"><i data-lucide="message-square"></i></div>
+      <div><div class="cat-name">Words</div><div class="cat-route">/api/v1/<span>words</span></div></div>
+    </div>
   </div>
 </section>
 
@@ -546,10 +590,6 @@
   </div>
 </footer>
 
-<<<<<<< HEAD
-<script src="https://unpkg.com/lucide@latest"></script>
-<script src="/js/lucide-ui.js"></script>
-=======
 <script>
   // Initialize Lucide Icons
   lucide.createIcons();
@@ -562,12 +602,14 @@
     btn.style.background = 'var(--get-bg)';
     btn.style.color = 'var(--get-text)';
     btn.style.borderColor = 'var(--get-text)';
-    lucide.createIcons(); // Re-render the check icon
+    lucide.createIcons();
     
     setTimeout(() => {
       btn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px;"></i> Copy';
-      btn.style = '';
-      lucide.createIcons(); // Re-render the copy icon
+      btn.style.background = '';
+      btn.style.color = '';
+      btn.style.borderColor = '';
+      lucide.createIcons();
     }, 2000);
   }
 
@@ -580,6 +622,7 @@
   if (currentTheme === 'dark') {
     document.body.classList.add('dark-mode');
     themeIcon.setAttribute('data-lucide', 'sun');
+    lucide.createIcons();
   }
 
   themeToggle.addEventListener('click', () => {
@@ -592,10 +635,9 @@
       themeIcon.setAttribute('data-lucide', 'moon');
       localStorage.setItem('theme', 'light');
     }
-    lucide.createIcons(); // Re-render the moon/sun icon
+    lucide.createIcons();
   });
 </script>
->>>>>>> 58e61dc32bce496ab3653a4a5a246fdb8f10d9f6
 
 </body>
 </html>
