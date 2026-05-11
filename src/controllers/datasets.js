@@ -1,17 +1,21 @@
 const asyncHandler = require("../middlewares/asyncHandler");
-const { listDatasets, listDatasetRecords } = require("../services/datasets");
+const {
+  listDatasets,
+  listDatasetRecords,
+  resolveDatasetKey,
+} = require("../services/datasets");
 
-const createDatasetHandler = (datasetKey) =>
-  asyncHandler(async (req, res) => {
-    const data = await listDatasetRecords(datasetKey, req.query.count);
+const getDatasetRecords = asyncHandler(async (req, res) => {
+  const datasetKey = resolveDatasetKey(req.params.datasetKey) || req.params.datasetKey;
+  const data = await listDatasetRecords(datasetKey, req.query.count);
 
-    res.json({
-      success: true,
-      dataset: datasetKey,
-      count: data.length,
-      data,
-    });
+  res.json({
+    success: true,
+    dataset: datasetKey,
+    count: data.length,
+    data,
   });
+});
 
 const getDatasetDirectory = asyncHandler(async (req, res) => {
   const data = listDatasets();
@@ -24,6 +28,6 @@ const getDatasetDirectory = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-  createDatasetHandler,
+  getDatasetRecords,
   getDatasetDirectory,
 };

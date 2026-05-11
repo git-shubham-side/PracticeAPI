@@ -249,11 +249,18 @@ All `/api/*` routes are rate-limited to **100 requests per 15 minutes** per IP. 
 PracticeAPI/
 ├── .env.example
 └── src/
-    ├── app.js                        ← Entry point. Routes + server startup
+    ├── app.js                        ← Express app setup (middleware + route mounting)
+    ├── server.js                     ← Server bootstrap, DB warmup, graceful shutdown
     ├── connectDB/
     │   └── db.js                     ← MongoDB connection (reuses existing connection)
+    ├── routes/
+    │   ├── index.js                  ← Central route composition
+    │   ├── web.routes.js             ← Landing page routes
+    │   └── api.routes.js             ← API endpoint routes
     ├── controllers/
-    │   └── datasets.js               ← Handles requests, sends JSON response
+    │   ├── datasets.js               ← Dataset API controller
+    │   ├── pages.js                  ← Landing page controller
+    │   └── system.js                 ← Health/status controller
     ├── services/
     │   └── datasets.js               ← Core logic: dataset registry, seeding, querying
     ├── models/
@@ -277,8 +284,8 @@ PracticeAPI/
         └── notfound.ejs              ← 404 page
 ```
 
-> **If you want to understand this project**, start with these 3 files in order:
-> `src/app.js` → `src/controllers/datasets.js` → `src/services/datasets.js`
+> **If you want to understand this project**, start with these 4 files in order:
+> `src/server.js` → `src/app.js` → `src/routes/api.routes.js` → `src/services/datasets.js`
 
 ---
 
@@ -293,8 +300,8 @@ When the server starts:
 
 When you make a request like `GET /api/v1/books?count=5`:
 
-1. Route handler in `app.js` picks it up
-2. `createDatasetHandler("books")` passes it to the controller
+1. Route handler in `routes/api.routes.js` picks it up
+2. `getDatasetRecords` passes it to the controller
 3. Controller calls `listDatasetRecords("books", 5)`
 4. Service sanitizes `count` (default 10, max 100)
 5. `ensureMinimumDocuments()` checks if DB has enough records

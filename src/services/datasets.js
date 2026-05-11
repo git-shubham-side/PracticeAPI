@@ -460,8 +460,21 @@ const datasets = {
   },
 };
 
+function resolveDatasetKey(datasetKey) {
+  if (datasets[datasetKey]) {
+    return datasetKey;
+  }
+
+  const match = Object.entries(datasets).find(([, dataset]) =>
+    dataset.aliases.includes(datasetKey),
+  );
+
+  return match ? match[0] : null;
+}
+
 function getDatasetOrThrow(datasetKey) {
-  const dataset = datasets[datasetKey];
+  const resolvedKey = resolveDatasetKey(datasetKey);
+  const dataset = resolvedKey ? datasets[resolvedKey] : null;
 
   if (!dataset) {
     const error = new Error("Dataset not found");
@@ -469,7 +482,10 @@ function getDatasetOrThrow(datasetKey) {
     throw error;
   }
 
-  return dataset;
+  return {
+    key: resolvedKey,
+    config: dataset,
+  };
 }
 
 async function insertSafely(model, documents) {
@@ -487,7 +503,7 @@ async function insertSafely(model, documents) {
 }
 
 async function ensureMinimumDocuments(datasetKey) {
-  const dataset = getDatasetOrThrow(datasetKey);
+  const { key, config: dataset } = getDatasetOrThrow(datasetKey);
   const initialCount = await dataset.model.countDocuments();
   let currentCount = initialCount;
   let attempts = 0;
@@ -510,7 +526,7 @@ async function ensureMinimumDocuments(datasetKey) {
   }
 
   return {
-    key: datasetKey,
+    key,
     label: dataset.label,
     count: currentCount,
     seedCount: dataset.seedCount,
@@ -519,7 +535,7 @@ async function ensureMinimumDocuments(datasetKey) {
 }
 
 async function listDatasetRecords(datasetKey, countValue) {
-  const dataset = getDatasetOrThrow(datasetKey);
+  const { config: dataset } = getDatasetOrThrow(datasetKey);
   const limit = parseCount(countValue);
 
   await ensureMinimumDocuments(datasetKey);
@@ -551,5 +567,6 @@ module.exports = {
   datasets,
   listDatasets,
   listDatasetRecords,
+  resolveDatasetKey,
   warmDatasets,
 };

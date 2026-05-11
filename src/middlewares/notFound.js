@@ -1,4 +1,3 @@
-const homeUrl = ["/api/v1/", "/api", "/v1", "/api/v1"];
 const underConstructionRoutes = [
   "/api/v1/home/locations",
   // "/api/v1/date", // unused removed later
@@ -21,9 +20,6 @@ const underConstructionRoutes = [
 
 // notFound.js
 module.exports = (req, res) => {
-  if (homeUrl.includes(req.url)) {
-    return res.redirect("/api/v1/home");
-  }
   if (underConstructionRoutes.includes(req.url)) {
     let route = req.url;
     if (req.accepts("html")) {
